@@ -3,12 +3,22 @@
   "version": "1.0.0",
   "description": "Pathology solution online+ server",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "Md Kutub Islam",
   "license": "ISC",
   "devDependencies": {
     "prettier": "^3.3.3"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-useragent": "^1.0.15",
+    "mongoose": "^8.5.3"
   }
 }
