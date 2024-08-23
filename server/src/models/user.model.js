@@ -70,6 +70,10 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
+userSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
 userSchema.methods.generateTemporaryToken = function () {
   // This token should be client facing
   // for example: for email verification unHashedToken should go into the user's mail
