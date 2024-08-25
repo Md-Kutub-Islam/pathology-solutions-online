@@ -1,9 +1,10 @@
-import { EMAIL_VERIFY_PAGE } from "../constants.js";
+import { EMAIL_VERIFY_PAGE, cookieOptions } from "../constants.js";
 import User from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { SendEmail } from "../utils/SendMail.js";
+import moment from "moment-timezone";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
@@ -131,10 +132,10 @@ export const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(404, "user not found");
   }
 
-  // const isPasswordValid = await user.isPasswordCorrect(password);
-  // if (!isPasswordValid) {
-  //   throw new ApiError(500, "invalid credentials");
-  // }
+  const isPasswordValid = await user.isPasswordCorrect(password);
+  if (!isPasswordValid) {
+    throw new ApiError(500, "invalid credentials");
+  }
 
   if (!user.isEmailVerified) {
     const currentDate = new Date();
@@ -148,15 +149,15 @@ export const loginUser = asyncHandler(async (req, res) => {
     }
 
     const token = await generateToken(user);
-    // const basePath = process.env.CORS_ORIGIN;
-    // const emailData = {
-    //   email: user.email,
-    //   template: 'ConfirmEmail',
-    //   url: `${basePath}${EMAIL_VERIFY_PAGE}?token=${token.unHashedToken}`,
-    //   subject: 'Email Verification',
-    // };
+    const basePath = process.env.CORS_ORIGIN;
+    const emailData = {
+      email: user.email,
+      template: "ConfirmEmail",
+      url: `${basePath}${EMAIL_VERIFY_PAGE}?token=${token.unHashedToken}`,
+      subject: "Email Verification",
+    };
 
-    // await SendEmail(emailData);
+    await SendEmail(emailData);
 
     await User.findByIdAndUpdate(
       user._id,
@@ -188,13 +189,13 @@ export const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(500, "something went worng");
   }
 
-  const formattedDate = moment(loggedInUserInfo.updatedAt)
-    .tz("Asia/Kolkata")
-    .format("MMMM D, YYYY [at] h:mm A");
-  await Notification.create({
-    user: loggedInUserInfo._id,
-    notification: `Your account logged in from ${deviceInfo.os} (${deviceInfo.browser}) on ${formattedDate}`,
-  });
+  // const formattedDate = moment(loggedInUserInfo.updatedAt)
+  //   .tz("Asia/Kolkata")
+  //   .format("MMMM D, YYYY [at] h:mm A");
+  // await Notification.create({
+  //   user: loggedInUserInfo._id,
+  //   notification: `Your account logged in from ${deviceInfo.os} (${deviceInfo.browser}) on ${formattedDate}`,
+  // });
 
   return res
     .status(200)
