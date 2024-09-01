@@ -210,6 +210,89 @@ export const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
+export const logoutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $unset: {
+        refreshToken: 1,
+        emailVerificationToken: 1,
+        emailVerificationExpiry: 1,
+        forgotPasswordToken: 1,
+        forgotPasswordExpiry: 1,
+      },
+    },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
+    .json(new ApiResponse(200, "user logged out"));
+});
+
+export const getCurrentUser = asyncHandler(async (req, res) => {
+  const user = await req.user;
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { userInfo: user }, "user fetched successfully")
+    );
+});
+
+export const refreshUserToken = asyncHandler(async (req, res) => {
+  const token = req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!token) {
+    throw new ApiError(401, "unauthorized request");
+  }
+
+  const decodedToken = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+  const user = await User.findById(decodedToken._id);
+
+  if (!user) {
+    await User.findByIdAndUpdate(
+      req.user?._id,
+      {
+        $unset: {
+          refreshToken: 1,
+          emailVerificationToken: 1,
+          emailVerificationExpiry: 1,
+          forgotPasswordToken: 1,
+          forgotPasswordExpiry: 1,
+        },
+      },
+      { new: true }
+    );
+
+    return res
+      .status(200)
+      .clearCookie("accessToken", cookieOptions)
+      .clearCookie("refreshToken", cookieOptions)
+      .json(new ApiResponse(200, "user logged out"));
+  }
+
+  const newRefreshToken = await user.generateRefreshToken();
+  const newAccessToken = await user.generateAccessToken();
+
+  await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        refreshToken: newRefreshToken,
+      },
+    },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .cookie("accessToken", newAccessToken, cookieOptions)
+    .cookie("refreshToken", newRefreshToken, cookieOptions)
+    .json(new ApiResponse(200, { userInfo: user }, "access token refreshed"));
+});
+
 export const emailVerify = asyncHandler(async (req, res) => {
   const { token } = req.body;
 
