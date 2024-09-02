@@ -1,4 +1,8 @@
-import { EMAIL_VERIFY_PAGE, cookieOptions } from "../constants.js";
+import {
+  EMAIL_VERIFY_PAGE,
+  cookieOptions,
+  RESET_PASS_PAGE,
+} from "../constants.js";
 import User from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -238,6 +242,156 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
     .status(200)
     .json(
       new ApiResponse(200, { userInfo: user }, "user fetched successfully")
+    );
+});
+
+export const deleteUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const user = await req.user;
+
+  let deleteUser = user;
+  const findUser = await User.findById(id);
+
+  if (!findUser) {
+    throw new ApiError(404, "user not found");
+  }
+  deleteUser = findUser;
+
+  if (id == user._id) {
+    deleteUser = user;
+  }
+
+  if (id != user._id) {
+    throw new ApiError(500, "you don't have access");
+  }
+
+  const deletedUser = await User.findByIdAndDelete(deleteUser?._id);
+  if (!deletedUser) {
+    throw new ApiError(500, "something went worng");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "user deleted successfully"));
+});
+
+export const updateUser = asyncHandler(async (req, res) => {
+  const { name, username, email, password, newPassword } = req.body;
+  const { id } = req.params;
+  const user = req.user;
+
+  console.log(name, username, email, password, newPassword);
+
+  if (!name && !username && !email && !newPassword) {
+    throw new ApiError(404, "no update data provided");
+  }
+
+  const findUser = await User.findById(id);
+  if (!findUser) {
+    throw new ApiError(404, "user not found");
+  }
+  const updateUser = findUser;
+
+  if (id != user._id) {
+    throw new ApiError(500, "you don't have access");
+  }
+
+  if (password) {
+    const isPasswordCorrect = await findUser.isPasswordCorrect(password);
+    if (!isPasswordCorrect) {
+      throw new ApiError(401, "worng password");
+    }
+  }
+
+  const updateData = {};
+
+  if (name) {
+    updateData.name = name;
+  }
+
+  if (username) {
+    updateData.username = username;
+  }
+
+  if (email) {
+    const token = await generateToken(user);
+    const basePath = process.env.CORS_ORIGIN;
+    const emailData = {
+      email: user.email,
+      template: "ConfirmEmail",
+      url: `${basePath}${EMAIL_VERIFY_PAGE}?token=${token.unHashedToken}`,
+      subject: "Email Verification",
+    };
+    await SendEmail(emailData);
+
+    updateData.email = email;
+    updateData.isEmailVerified = false;
+    updateData.emailVerificationToken = token.hashedToken;
+    updateData.emailVerificationExpiry = token.expiry;
+  }
+
+  if (newPassword) {
+    updateData.password = await bcrypt.hash(newPassword, 10);
+  }
+
+  const userInfo = await User.findByIdAndUpdate(
+    updateUser._id,
+    { $set: updateData },
+    { new: true }
+  ).select(ignoreFields);
+
+  const message = `details updated. ${
+    email ? "email verification link sent to your new email" : ""
+  }`;
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { userInfo: userInfo }, message));
+});
+
+export const forgotPasswordLink = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new ApiError(400, "missing required fields");
+  }
+
+  const user = await User.findOne({
+    $or: { email: email },
+  });
+
+  if (!user) {
+    throw new ApiError(404, "user not found");
+  }
+
+  const token = await generateToken(user);
+  const basePath = process.env.CORS_ORIGIN;
+  const emailData = {
+    email: user.email,
+    template: "ForgotPassword",
+    url: `${basePath}${RESET_PASS_PAGE}?token=${token.unHashedToken}`,
+    subject: "Reset Your Password",
+  };
+
+  await SendEmail(emailData);
+  await User.findByIdAndUpdate(
+    user._id,
+    {
+      $set: {
+        forgotPasswordToken: token.hashedToken,
+        forgotPasswordExpiry: token.expiry,
+      },
+    },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { userInfo: user.email },
+        "A Password Reset link has been sent to your email address"
+      )
     );
 });
 

@@ -26,3 +26,4 @@ export const cookieOptions = {
 // URI base path
 export const BASEPATH = "/api/v1";
 export const EMAIL_VERIFY_PAGE = "/emailVerify";
+export const RESET_PASS_PAGE = "/resetPassword";
