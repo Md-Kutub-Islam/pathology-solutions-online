@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import useragent from "express-useragent";
 import authRouters from "./routes/user.auth.routes.js";
+import adminAuthRouters from "./routes/admin.auth.routes.js";
 import addressRoutes from "./routes/address.routes.js";
 import { BASEPATH } from "./constants.js";
 
@@ -32,6 +33,8 @@ app.use(cookieParser());
 
 // Auth & User Routes
 app.use(`${BASEPATH}/auth`, useragent.express(), authRouters);
+// Auth & Admin Routes
+app.use(`${BASEPATH}/auth/admin`, useragent.express(), adminAuthRouters);
 // Address Routes
 app.use(`${BASEPATH}/address`, addressRoutes);
 
