@@ -6,6 +6,7 @@ import authRouters from "./routes/user.auth.routes.js";
 import adminAuthRouters from "./routes/admin.auth.routes.js";
 import addressRoutes from "./routes/address.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
+import testRoutes from "./routes/test.routes.js";
 import { BASEPATH } from "./constants.js";
 
 const app = express();
@@ -40,5 +41,7 @@ app.use(`${BASEPATH}/auth/admin`, useragent.express(), adminAuthRouters);
 app.use(`${BASEPATH}/address`, addressRoutes);
 // Category Routes
 app.use(`${BASEPATH}/category`, categoryRoutes);
+// Tests Routes
+app.use(`${BASEPATH}/test`, testRoutes);
 
 export default app;
