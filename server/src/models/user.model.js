@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { availableUserRoles, availableUserRolesEnum } from "../constants.js";
+import { availableUserRoles } from "../constants.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
@@ -38,7 +38,6 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: availableUserRolesEnum,
       default: availableUserRoles.USER,
       required: true,
     },
