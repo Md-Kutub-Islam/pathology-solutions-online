@@ -27,3 +27,12 @@ export const cookieOptions = {
 export const BASEPATH = "/api/v1";
 export const EMAIL_VERIFY_PAGE = "/emailVerify";
 export const RESET_PASS_PAGE = "/resetPassword";
+
+// allowed image extensions
+export const allowedImgExtensions = {
+  jpg: ".jpg",
+  png: ".png",
+  jpeg: ".jpeg",
+  webp: ".webp",
+};
+export const allowedImgExtensionsEnum = Object.values(allowedImgExtensions);

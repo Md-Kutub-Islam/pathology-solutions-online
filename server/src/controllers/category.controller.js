@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import Category from "../models/category.model.js";
-// import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { availableUserRoles } from "../constants.js";
 
 export const createCategory = asyncHandler(async (req, res) => {
@@ -10,9 +10,9 @@ export const createCategory = asyncHandler(async (req, res) => {
   const img = req.file;
   const admin = await req.admin;
 
-  //   if (!name || !img) {
-  //     throw new ApiError(400, "All fields are required");
-  //   }
+  if (!name || !img) {
+    throw new ApiError(400, "All fields are required");
+  }
   if (!name) {
     throw new ApiError(400, "All fields are required");
   }
@@ -20,23 +20,36 @@ export const createCategory = asyncHandler(async (req, res) => {
     throw new ApiError(500, "you don't have access");
   }
 
-  //   const uploadedImg = await uploadOnCloudinary(img.path, {
-  //     folder: "category-images",
-  //   });
+  const uploadOptions = {
+    folder: "avatar",
+    // gravity: 'faces',
+    width: 200,
+    height: 200,
+    crop: "fit",
+  };
 
-  //   if (!uploadedImg) {
-  //     throw new ApiError(500, "Error occured while uploading the image");
-  //   }
+  const uploadedImg = await uploadOnCloudinary(img.path, uploadOptions, {
+    folder: "category-images",
+  });
+
+  if (!uploadedImg) {
+    throw new ApiError(500, "Error occured while uploading the image");
+  }
+
+  if (uploadedImg.http_code === 400) {
+    throw new ApiError(500, `error uploading image: ${uploadedImg?.message}`);
+  }
+
   const category = await Category.create({
     name,
-    // image: {
-    //   url: uploadedImg.url,
-    //   public_id: uploadedImg.public_id,
-    //   secure_url: uploadedImg.secure_url,
-    //   width: uploadedImg.width,
-    //   height: uploadedImg.height,
-    //   format: uploadedImg.format,
-    // },
+    image: {
+      url: uploadedImg.url,
+      public_id: uploadedImg.public_id,
+      secure_url: uploadedImg.secure_url,
+      width: uploadedImg.width,
+      height: uploadedImg.height,
+      format: uploadedImg.format,
+    },
     owner: admin.id,
   });
 
@@ -100,7 +113,7 @@ export const updateCategory = asyncHandler(async (req, res) => {
   const { categoryId } = await req.params;
   const { name } = await req.body;
   const admin = await req.admin;
-  // const image = req.file;
+  const image = req.file;
 
   if (admin.role != availableUserRoles.ADMIN) {
     throw new ApiError(500, "you don't have access");
@@ -117,31 +130,31 @@ export const updateCategory = asyncHandler(async (req, res) => {
     updateData.name = name;
   }
 
-  // if (image) {
-  //   const uploadOptions = {
-  //     folder: 'category-images',
-  //   };
+  if (image) {
+    const uploadOptions = {
+      folder: "category-images",
+    };
 
-  //   const img = await uploadOnCloudinary(image.path, uploadOptions);
-  //   if (!img) {
-  //     throw new ApiError(500, `something went worng error`);
-  //   }
+    const img = await uploadOnCloudinary(image.path, uploadOptions);
+    if (!img) {
+      throw new ApiError(500, `something went worng error`);
+    }
 
-  //   if (img.http_code === 400) {
-  //     throw new ApiError(500, `error uploading image: ${img?.message}`);
-  //   }
+    if (img.http_code === 400) {
+      throw new ApiError(500, `error uploading image: ${img?.message}`);
+    }
 
-  //   const imgData = {
-  //     url: img.url,
-  //     public_id: img.public_id,
-  //     secure_url: img.secure_url,
-  //     width: img.width,
-  //     height: img.height,
-  //     format: img.format,
-  //   };
+    const imgData = {
+      url: img.url,
+      public_id: img.public_id,
+      secure_url: img.secure_url,
+      width: img.width,
+      height: img.height,
+      format: img.format,
+    };
 
-  //   updateData.image = imgData;
-  // }
+    updateData.image = imgData;
+  }
 
   const updatedCategory = await Category.findByIdAndUpdate(
     categoryId,

@@ -6,16 +6,20 @@ import {
   removeCategory,
   updateCategory,
 } from "../controllers/category.controller.js";
+import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/admin.auth.middleware.js";
 
 const router = Router();
 
-router.route("/").post(verifyJWT, createCategory).get(getAllCategory);
+router
+  .route("/")
+  .post(verifyJWT, upload.single("image"), createCategory)
+  .get(getAllCategory);
 
 router
   .route("/:categoryId")
   .get(getOneCategory)
-  .post(verifyJWT, updateCategory)
+  .put(verifyJWT, upload.single("image"), updateCategory)
   .delete(verifyJWT, removeCategory);
 
 export default router;
