@@ -52,39 +52,14 @@ const getCart = async (userId) => {
   );
 };
 
+// Controller to fetch user cart.
+export const fetchUserCart = asyncHandler(async (req, res) => {
+  const cart = await getCart(req.user._id);
+
+  return res.status(200).json(new ApiResponse(200, cart));
+});
+
 // Controller to add or update item in a cart
-// export const addOrUpdateCart = asyncHandler(async (req, res) => {
-//   const { testId } = req.body;
-
-//   const cart = await Cart.findOne({
-//     owner: req.user._id,
-//   });
-
-//   const test = await Test.findById(testId);
-
-//   if (!test) {
-//     throw new ApiError(404, "Test does not exist");
-//   }
-
-//   const addedTest = cart?.items?.find(
-//     (item) => item.testId.toString() === testId
-//   );
-
-//   if (!addedTest) {
-//     cart.items?.push({
-//       testId,
-//     });
-//   }
-
-//   await cart.save();
-
-//   const newCart = await getCart(req.user._id);
-
-//   return res
-//     .status(200)
-//     .json(new ApiResponse(200, newCart, "Item added to the cart successfully"));
-// });
-
 export const addOrUpdateCart = asyncHandler(async (req, res) => {
   const { testId } = req.body;
 
@@ -129,4 +104,66 @@ export const addOrUpdateCart = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, newCart, "Item added to the cart successfully"));
+});
+
+// Controller to remove item from the cart
+export const removeFromCart = asyncHandler(async (req, res) => {
+  const { testId } = req.params;
+
+  const test = await Test.findById(testId);
+
+  if (!test) {
+    throw new ApiError(400, "Test does not exist");
+  }
+
+  const updatedCart = await Cart.findOneAndUpdate(
+    {
+      owner: req.user._id,
+    },
+    {
+      $pull: {
+        items: {
+          testId: testId,
+        },
+      },
+    },
+    { new: true }
+  );
+
+  if (!updatedCart) {
+    throw new ApiError(
+      500,
+      "Some error occured while removing the item from the cart"
+    );
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedCart,
+        "Item removed from the cart successfully"
+      )
+    );
+});
+
+export const clearCart = asyncHandler(async (req, res) => {
+  await Cart.findOneAndUpdate(
+    {
+      owner: req.user._id,
+    },
+    {
+      $set: {
+        items: [],
+      },
+    },
+    { new: true }
+  );
+
+  const cart = await getCart(req.user._id);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, cart, "All items are removed from cart"));
 });
