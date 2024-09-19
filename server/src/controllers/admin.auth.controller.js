@@ -102,20 +102,6 @@ export const registerAdmin = asyncHandler(async (req, res) => {
 export const loginAdmin = asyncHandler(async (req, res) => {
   const { email, password } = await req.body;
 
-  const userAgent = req.useragent;
-
-  const deviceInfo = {
-    isMobile: userAgent.isMobile,
-    isTablet: userAgent.isTablet,
-    isDesktop: userAgent.isDesktop,
-    isBot: userAgent.isBot,
-    browser: userAgent.browser,
-    version: userAgent.version,
-    os: userAgent.os,
-    platform: userAgent.platform,
-    source: userAgent.source,
-  };
-
   if (!email) {
     throw new ApiError(400, "missing required fields");
   }
@@ -419,8 +405,8 @@ export const refreshUserToken = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, "admin logged out"));
   }
 
-  const newRefreshToken = await user.generateRefreshToken();
-  const newAccessToken = await user.generateAccessToken();
+  const newRefreshToken = await admin.generateRefreshToken();
+  const newAccessToken = await admin.generateAccessToken();
 
   await Admin.findByIdAndUpdate(
     req.admin?._id,

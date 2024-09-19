@@ -5,11 +5,11 @@ import {
   fetchUserCart,
   removeFromCart,
 } from "../controllers/cart.controller.js";
-import { verifyJWT } from "../middlewares/auth.middlewares.js";
+import { verifyUserJWT } from "../middlewares/user.auth.middlewares.js";
 
 const router = Router();
 
-router.use(verifyJWT);
+router.use(verifyUserJWT);
 
 router.route("/").get(fetchUserCart);
 

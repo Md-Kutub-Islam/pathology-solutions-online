@@ -7,19 +7,19 @@ import {
   updateCategory,
 } from "../controllers/category.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
-import { verifyJWT } from "../middlewares/admin.auth.middleware.js";
+import { verifyAdminJWT } from "../middlewares/admin.auth.middleware.js";
 
 const router = Router();
 
 router
   .route("/")
-  .post(verifyJWT, upload.single("image"), createCategory)
+  .post(verifyAdminJWT, upload.single("image"), createCategory)
   .get(getAllCategory);
 
 router
   .route("/:categoryId")
   .get(getOneCategory)
-  .put(verifyJWT, upload.single("image"), updateCategory)
-  .delete(verifyJWT, removeCategory);
+  .put(verifyAdminJWT, upload.single("image"), updateCategory)
+  .delete(verifyAdminJWT, removeCategory);
 
 export default router;

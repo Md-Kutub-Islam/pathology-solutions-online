@@ -10,16 +10,19 @@ import {
   emailVerify,
   refreshUserToken,
 } from "../controllers/admin.auth.controller.js";
-import { verifyJWT } from "../middlewares/admin.auth.middleware.js";
+import { verifyAdminJWT } from "../middlewares/admin.auth.middleware.js";
 
 const router = Router();
 
 router.route("/register").post(registerAdmin);
 router.route("/login").post(loginAdmin);
-router.route("/logout").post(verifyJWT, logoutAdmin);
+router.route("/logout").post(verifyAdminJWT, logoutAdmin);
 
-router.route("/admin").get(verifyJWT, getCurrentAdmin);
-router.route("/:id").put(verifyJWT, updateAdmin).delete(verifyJWT, deleteAdmin);
+router.route("/admin").get(verifyAdminJWT, getCurrentAdmin);
+router
+  .route("/:id")
+  .put(verifyAdminJWT, updateAdmin)
+  .delete(verifyAdminJWT, deleteAdmin);
 
 router.route("/refreshToken").post(refreshUserToken);
 

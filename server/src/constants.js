@@ -28,6 +28,19 @@ export const BASEPATH = "/api/v1";
 export const EMAIL_VERIFY_PAGE = "/emailVerify";
 export const RESET_PASS_PAGE = "/resetPassword";
 
+// order status enum
+export const orderStatus = {
+  PENDING: "PENDING",
+  CANCELLED: "CANCELLED",
+  DELIVERED: "DELIVERED",
+};
+export const orderStatusEnum = Object.values(orderStatus);
+
+export const availablePaymentMethod = {
+  ONLINE: "ONLINE",
+  OFFLINE: "OFFLINE",
+};
+
 // allowed image extensions
 export const allowedImgExtensions = {
   jpg: ".jpg",

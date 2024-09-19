@@ -45,11 +45,14 @@ const adminSchema = new Schema(
       default: availableUserRoles.ADMIN,
       required: true,
     },
+    order: {
+      type: Schema.Types.ObjectId,
+      ref: "orders",
+    },
     isEmailVerified: {
       type: Boolean,
       default: false,
     },
-
     refreshToken: {
       type: String,
     },

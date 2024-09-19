@@ -108,20 +108,6 @@ export const registerUser = asyncHandler(async (req, res) => {
 export const loginUser = asyncHandler(async (req, res) => {
   const { username, email, password } = await req.body;
 
-  const userAgent = req.useragent;
-
-  const deviceInfo = {
-    isMobile: userAgent.isMobile,
-    isTablet: userAgent.isTablet,
-    isDesktop: userAgent.isDesktop,
-    isBot: userAgent.isBot,
-    browser: userAgent.browser,
-    version: userAgent.version,
-    os: userAgent.os,
-    platform: userAgent.platform,
-    source: userAgent.source,
-  };
-
   if (!email && !username) {
     throw new ApiError(400, "missing required fields");
   }

@@ -156,7 +156,7 @@ export const removeTest = asyncHandler(async (req, res) => {
   const admin = await req.admin;
   const test = await Test.findById(testId);
 
-  if (admin.role != availableUserRoles.ADMIN) {
+  if (!admin) {
     throw new ApiError(500, "you don't have access");
   }
 

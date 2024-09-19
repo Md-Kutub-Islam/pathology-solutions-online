@@ -5,18 +5,18 @@ import {
   removeAddress,
   updateAddress,
 } from "../controllers/address.controller.js";
-import { verifyJWT } from "../middlewares/auth.middlewares.js";
+import { verifyUserJWT } from "../middlewares/user.auth.middlewares.js";
 
 const router = Router();
 
 router
   .route("/:userId")
-  .post(verifyJWT, createAdress)
-  .get(verifyJWT, getCurrentAddress);
+  .post(verifyUserJWT, createAdress)
+  .get(verifyUserJWT, getCurrentAddress);
 
 router
   .route("/:userId/:addressId")
-  .put(verifyJWT, updateAddress)
-  .delete(verifyJWT, removeAddress);
+  .put(verifyUserJWT, updateAddress)
+  .delete(verifyUserJWT, removeAddress);
 
 export default router;
