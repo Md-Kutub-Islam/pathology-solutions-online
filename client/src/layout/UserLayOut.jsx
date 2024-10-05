@@ -1,5 +1,6 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import Header from "../components/header/Header";
 
 function UserLayOut() {
   const location = useLocation();
@@ -7,12 +8,12 @@ function UserLayOut() {
   return (
     <div>
       {location.pathname !== "/user/register" &&
-        location.pathname !== "/user/login" && <div>Header</div>}
+        location.pathname !== "/user/login" && <Header />}
       <div>
         <Outlet />
       </div>
-      {location.pathname !== "/user/register" &&
-        location.pathname !== "/user/login" && <div>Footer</div>}
+      {/* {location.pathname !== "/user/register" &&
+        location.pathname !== "/user/login" && <div>Footer</div>} */}
     </div>
   );
 }

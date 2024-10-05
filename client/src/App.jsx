@@ -4,6 +4,7 @@ import UserLayOut from "./layout/UserLayOut";
 import { RegistrationPage, LoginPage } from "./pages/user-pages";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import VerifyEmail from "./components/user-components/auth/VerifyEmail";
+import Home from "./components/user-components/home/Home";
 
 function App() {
   return (
@@ -15,8 +16,8 @@ function App() {
             <Route index element={<RegistrationPage />} />{" "}
             {/* Default to Dashboard */}
             <Route path="register" element={<RegistrationPage />} />{" "}
-            <Route path="login" element={<LoginPage />} />
-            {/* Nested Route */}
+            <Route path="login" element={<LoginPage />} />{" "}
+            <Route path="home" element={<Home />} /> {/* Nested Route */}
           </Route>
 
           {/* Route for Email Verification (direct access) */}
