@@ -8,20 +8,20 @@ export const availableUserRoles = {
 export const availableUserRolesEnum = Object.values(availableUserRoles);
 
 // cookie options
-// export const cookieOptions = {
-//   secure: true,
-//   httpOnly: true,
-//   sameSite: "none",
-//   path: "/",
-//   maxAge: 864000000, // 10 days
-// };
-
 export const cookieOptions = {
-  httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
-  secure: false, // Ensures cookies are sent over HTTPS in production
-  sameSite: "Strict", // Helps prevent CSRF attacks
-  maxAge: 1000 * 60 * 15, // 15 minutes expiry time
+  secure: true,
+  httpOnly: true,
+  sameSite: "none",
+  path: "/",
+  maxAge: 864000000, // 10 days
 };
+
+// export const cookieOptions = {
+//   httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+//   secure: false, // Ensures cookies are sent over HTTPS in production
+//   sameSite: "Strict", // Helps prevent CSRF attacks
+//   maxAge: 1000 * 60 * 15, // 15 minutes expiry time
+// };
 
 // URI base path
 export const BASEPATH = "/api/v1";
