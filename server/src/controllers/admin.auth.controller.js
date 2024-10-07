@@ -12,6 +12,10 @@ import moment from "moment-timezone";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import {
+  deleteFromCloudinary,
+  uploadOnCloudinary,
+} from "../utils/cloudinary.js";
 
 const ignoreFields =
   "-password -refreshToken -emailVerificationExpiry -emailVerificationToken -createdAt";
@@ -222,6 +226,16 @@ export const getCurrentAdmin = asyncHandler(async (req, res) => {
     .status(200)
     .json(
       new ApiResponse(200, { adminInfo: admin }, "admin fetched successfully")
+    );
+});
+
+export const getAllAdmins = asyncHandler(async (req, res) => {
+  const users = await Admin.find({}).sort({ createdAt: -1 });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { userInfo: users }, "user fetched successfully")
     );
 });
 
@@ -465,4 +479,117 @@ export const emailVerify = asyncHandler(async (req, res) => {
   );
 
   return res.status(200).json(200, "admin verified successfully");
+});
+
+export const uploadAvatar = asyncHandler(async (req, res) => {
+  const uploadedFile = await req.file;
+  const { id } = req.params;
+  const admin = await req.admin;
+  let changeAvatarAdmin;
+
+  const findAdmin = await Admin.findById(id);
+  if (!findAdmin) {
+    throw new ApiError(404, "user not found");
+  }
+  changeAvatarAdmin = findAdmin;
+
+  if (id != admin._id) {
+    throw new ApiError(500, "you don't have access");
+  }
+
+  if (!uploadedFile) {
+    throw new ApiError(400, "no file uploaded");
+  }
+
+  const uploadOptions = {
+    folder: "avatar",
+    // gravity: 'faces',
+    width: 200,
+    height: 200,
+    crop: "fit",
+  };
+
+  const img = await uploadOnCloudinary(uploadedFile.path, uploadOptions);
+  if (!img) {
+    throw new ApiError(500, `something went worng error`);
+  }
+
+  if (img.http_code === 400) {
+    throw new ApiError(500, `error uploading image: ${img?.message}`);
+  }
+
+  const avatarData = {
+    url: img.url,
+    public_id: img.public_id,
+    secure_url: img.secure_url,
+    width: img.width,
+    height: img.height,
+    format: img.format,
+  };
+
+  const updatedAdmin = await Admin.findByIdAndUpdate(
+    changeAvatarAdmin._id,
+    {
+      $set: {
+        avatar: avatarData,
+      },
+    },
+    { new: true }
+  ).select(ignoreFields);
+
+  if (!updatedAdmin) {
+    throw new ApiError(500, "something went worng");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { userInfo: updatedAdmin }, "image uploaded"));
+});
+
+export const deleteAvatar = asyncHandler(async (req, res) => {
+  const admin = await req.admin;
+  const { id } = await req.params;
+
+  let deleteAvatarAdmin = admin;
+  if (id != admin._id) {
+    const findAdmin = await Admin.findById(id);
+
+    if (!findAdmin) {
+      throw new ApiError(404, "user not found");
+    }
+    deleteAvatarAdmin = findAdmin;
+  }
+
+  if (id != admin._id) {
+    throw new ApiError(500, "you don't have access");
+  }
+
+  const deleteAvatarOnCloud = await deleteFromCloudinary(
+    deleteAvatarAdmin.avatar?.public_id
+  );
+
+  if (!deleteAvatarOnCloud) {
+    throw new ApiError(500, `something went worng error`);
+  }
+
+  if (deleteAvatarOnCloud.http_code === 400) {
+    throw new ApiError(
+      500,
+      `error deleting image: ${deleteAvatarOnCloud?.message}`
+    );
+  }
+
+  const updatedAdmin = await Admin.findByIdAndUpdate(
+    deleteAvatarAdmin._id,
+    {
+      $unset: {
+        avatar: 1,
+      },
+    },
+    { new: true }
+  ).select(ignoreFields);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { userInfo: updatedAdmin }, "image deleted"));
 });
