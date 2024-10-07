@@ -1,10 +1,9 @@
 import React from "react";
 import "./App.css";
 import UserLayOut from "./layout/UserLayOut";
-import { RegistrationPage, LoginPage } from "./pages/user-pages";
+import { RegistrationPage, LoginPage, HomePage } from "./pages/user-pages";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import VerifyEmail from "./components/user-components/auth/VerifyEmail";
-import Home from "./components/user-components/home/Home";
 
 function App() {
   return (
@@ -17,7 +16,8 @@ function App() {
             {/* Default to Dashboard */}
             <Route path="register" element={<RegistrationPage />} />{" "}
             <Route path="login" element={<LoginPage />} />{" "}
-            <Route path="home" element={<Home />} /> {/* Nested Route */}
+            <Route path="home" element={<HomePage />} />
+            {/* Nested Route */}
           </Route>
 
           {/* Route for Email Verification (direct access) */}

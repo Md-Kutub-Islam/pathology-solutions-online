@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import testIMG1 from "../../../assets/Prothrombin Time.jpg";
 import testIMG2 from "../../../assets/Electrolyte Panel.jpg";
 import { FaStarHalfAlt } from "react-icons/fa";
 import { FaFilter } from "react-icons/fa";
 import Button from "../../Button";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllAdmins } from "../../../features/admin-features/adminAuthSlice";
+import { getAlltests } from "../../../features/comman-features/testSlice";
 
 function Home() {
+  const dispatch = useDispatch();
+  const { isUserVerified, isUserLogin } = useSelector(
+    (state) => state.userAuth
+  );
+  const { allAdminData } = useSelector((state) => state.adminAuth);
+  const { tests } = useSelector((state) => state.test);
+  console.log("test:", tests);
+
+  useEffect(() => {
+    if (isUserVerified && isUserLogin) {
+      dispatch(getAllAdmins());
+      dispatch(getAlltests());
+    }
+  }, []);
+
+  // console.log("allAdminData:", allAdminData);
+
   return (
     <div className=" w-full pt-10 bg-custom-green min-h-screen">
       <div className="flex flex-col gap-10">
@@ -15,16 +35,21 @@ function Home() {
           </h1>
 
           <div className="flex items-center justify-center gap-10 mt-10 overflow-x-auto whitespace-nowrap scrollbar-hide">
-            {[1, 2, 3, 4, 5, 6].map((ele, index) => (
-              <div key={index} className="flex flex-col items-center shrink-0">
-                <img
-                  className="h-32 w-32 rounded-full object-cover"
-                  src={testIMG1}
-                  alt="testImage"
-                />
-                <span>Test Name</span>
-              </div>
-            ))}
+            {tests &&
+              tests.length > 0 &&
+              tests.map((ele) => (
+                <div
+                  key={ele._id}
+                  className="flex flex-col items-center shrink-0"
+                >
+                  <img
+                    className="h-32 w-32 rounded-full object-cover"
+                    src={ele.mainImage.url}
+                    alt="testImage"
+                  />
+                  <span className=" text-wrap">{ele.testname}</span>
+                </div>
+              ))}
           </div>
         </div>
 
@@ -39,29 +64,35 @@ function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-5 mt-10 w-full md:grid-cols-4 lg:grid-cols-4">
-            {[1, 2, 3, 4, 5, 6].map((ele, index) => (
-              <div
-                key={index}
-                className="w-full py-5 px-2 rounded-lg bg-custom-light flex flex-col items-center justify-center gap-2"
-              >
-                <div>
-                  <img
-                    className="w-48 h-28 rounded-lg"
-                    src={testIMG2}
-                    alt="Lab Image"
-                  />
-                </div>
-                <div className="lg:mr-16">
-                  <span className="text-lg font-semibold">Lab Name</span>
-                  <div className="flex items-center gap-2">
-                    <FaStarHalfAlt className="text-custom-green" />
-                    <span>3.5</span>
+          <div className="grid grid-cols-2 gap-5 mt-10 w-full md:grid-cols-4 lg:grid-cols-4 mb-10">
+            {allAdminData && allAdminData.length > 0 ? (
+              allAdminData.map((ele) => (
+                <div
+                  key={ele._id}
+                  className="w-full py-5 px-2 rounded-lg flex flex-col items-center justify-center gap-2 bg-custom-light hover:bg-transparent hover:border-2 hover:border-custom-light transition duration-500 ease-in-out"
+                >
+                  <div>
+                    <img
+                      className="w-48 h-28 rounded-lg"
+                      src={testIMG2}
+                      alt="Lab Image"
+                    />
                   </div>
-                  <span>Full Lab address...</span>
+                  <div className="w-48">
+                    <span className="text-lg font-semibold text-wrap">
+                      {ele.labname}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <FaStarHalfAlt className="text-custom-green" />
+                      <span>3.5</span>
+                    </div>
+                    <span>Full Lab address...</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div>Loading...</div>
+            )}
           </div>
         </div>
       </div>
