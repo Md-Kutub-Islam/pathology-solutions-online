@@ -14,9 +14,9 @@ function Home() {
             Your Health, Our Priority – Book, Test, Download.
           </h1>
 
-          <div className=" flex items-center justify-center gap-10 mt-10 ">
+          <div className="flex items-center justify-center gap-10 mt-10 overflow-x-auto whitespace-nowrap scrollbar-hide">
             {[1, 2, 3, 4, 5, 6].map((ele, index) => (
-              <div key={index} className="flex flex-col items-center">
+              <div key={index} className="flex flex-col items-center shrink-0">
                 <img
                   className="h-32 w-32 rounded-full object-cover"
                   src={testIMG1}
@@ -30,7 +30,7 @@ function Home() {
 
         <hr className=" border-custom-light" />
 
-        <div className="w-4/5 m-auto">
+        <div className="w-5/6 m-auto">
           <div className="flex items-center justify-between">
             <h1 className=" font-semibold">Top Pathology Lab in Asansol.</h1>
             <div className="flex items-center">
@@ -39,11 +39,11 @@ function Home() {
             </div>
           </div>
 
-          <div className="flex items-center justify-center md:flex-wrap gap-5 mt-10">
-            {[1, 2, 3, 4].map((ele, index) => (
+          <div className="grid grid-cols-2 gap-5 mt-10 w-full md:grid-cols-4 lg:grid-cols-4">
+            {[1, 2, 3, 4, 5, 6].map((ele, index) => (
               <div
                 key={index}
-                className="w-1/4 py-5 px-2 rounded-lg bg-custom-light flex flex-col items-center justify-center gap-2"
+                className="w-full py-5 px-2 rounded-lg bg-custom-light flex flex-col items-center justify-center gap-2"
               >
                 <div>
                   <img

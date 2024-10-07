@@ -5,7 +5,7 @@ import { FaUser } from "react-icons/fa";
 import { FaBitbucket } from "react-icons/fa6";
 import logo from "../../assets/image.png";
 
-function Header() {
+function Header({ userData }) {
   const [searchData, setSearchData] = useState("");
 
   const handleOnChange = () => {};
@@ -29,15 +29,15 @@ function Header() {
         </div>
 
         {/* User */}
-        <div className="flex items-center gap-2">
-          <FaUser />
-          <span className=" text-base">UserName....</span>
+        <div className="flex items-center gap-1">
+          <FaUser className=" text-lg" />
+          <span className=" text-base font-medium">{userData.name}</span>
         </div>
 
         {/* Cart */}
-        <div className="flex items-center gap-2">
-          <FaBitbucket />
-          <span className=" text-base">Cart</span>
+        <div className="flex items-center gap-1">
+          <FaBitbucket className=" text-lg" />
+          <span className=" text-base font-medium">Cart</span>
         </div>
       </div>
     </div>

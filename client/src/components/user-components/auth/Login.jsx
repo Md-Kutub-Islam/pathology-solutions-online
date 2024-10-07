@@ -18,7 +18,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isUserLogin) {
-      navigate("/");
+      navigate("/user/home");
       toast.success("User login successfully");
 
       setFormData({

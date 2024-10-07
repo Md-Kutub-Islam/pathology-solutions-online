@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// Register
 export const register = createAsyncThunk(
   "auth/register",
   async ({ name, username, email, password }, { rejectWithValue }) => {
@@ -26,6 +27,7 @@ export const register = createAsyncThunk(
   }
 );
 
+// Login
 export const login = createAsyncThunk(
   "auth/login",
   async ({ email, password }, { rejectWithValue }) => {
@@ -45,6 +47,26 @@ export const login = createAsyncThunk(
       const message = error.response?.data?.message || error.message;
       const userInfo = error.response?.data?.userInfo || null;
       return rejectWithValue({ message, userInfo });
+    }
+  }
+);
+
+// User
+export const user = createAsyncThunk(
+  "auth/User",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL_BASEURL}/auth/user`,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const message = error.response?.data?.message || error.message;
+      return rejectWithValue(message);
     }
   }
 );
@@ -96,6 +118,20 @@ const userAuthSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload.message;
+      })
+      // User
+      .addCase(user.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(user.fulfilled, (state, action) => {
+        state.userData = action.payload.data.userInfo;
+        state.error = null;
+        state.isLoading = false;
+      })
+      .addCase(user.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
       });
   },
 });
