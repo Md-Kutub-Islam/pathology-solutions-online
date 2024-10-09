@@ -4,6 +4,7 @@ const InputBox = ({
   placeholder,
   name,
   value,
+  bgColor = "bg-transparent",
   onChange,
   className = "",
 }) => {
@@ -16,7 +17,7 @@ const InputBox = ({
         name={name}
         value={value}
         onChange={onChange}
-        className={`w-full rounded-xl border bg-transparent px-5 py-3 text-sm outline-none focus-visible:shadow-none ${className}`}
+        className={`w-full rounded-xl border px-5 py-3 text-sm outline-none focus-visible:shadow-none ${bgColor} ${className}`}
       />
     </div>
   );

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import testIMG1 from "../../../assets/Prothrombin Time.jpg";
 import testIMG2 from "../../../assets/Electrolyte Panel.jpg";
 import { FaStarHalfAlt } from "react-icons/fa";
 import { FaFilter } from "react-icons/fa";
@@ -64,7 +63,7 @@ function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-5 mt-10 w-full md:grid-cols-4 lg:grid-cols-4 mb-10">
+          <div className="grid grid-cols-2 gap-5 mt-10 w-full md:grid-cols-4 lg:grid-cols-4 mb">
             {allAdminData && allAdminData.length > 0 ? (
               allAdminData.map((ele) => (
                 <div
@@ -78,8 +77,8 @@ function Home() {
                       alt="Lab Image"
                     />
                   </div>
-                  <div className="w-48">
-                    <span className="text-lg font-semibold text-wrap">
+                  <div className="lg:w-48 w-full">
+                    <span className="lg:text-lg md:text-base font-semibold text-wrap">
                       {ele.labname}
                     </span>
                     <div className="flex items-center gap-2">

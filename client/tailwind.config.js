@@ -6,6 +6,7 @@ export default {
       colors: {
         "custom-green": "#5E8C61", // Add your custom color
         "custom-light": "#F4EDEB",
+        "custom-light-green": "#899D8A",
       },
     },
   },
