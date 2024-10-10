@@ -12,6 +12,7 @@ import {
   deleteAvatar,
   uploadAvatar,
   getAllAdmins,
+  getOneAdmin,
 } from "../controllers/admin.auth.controller.js";
 import { verifyAdminJWT } from "../middlewares/admin.auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -25,7 +26,8 @@ router.route("/logout").post(verifyAdminJWT, logoutAdmin);
 router.route("/admin").get(verifyAdminJWT, getCurrentAdmin);
 router.route("/admins").get(getAllAdmins);
 router
-  .route("/:id")
+  .route("/:adminId")
+  .get(getOneAdmin)
   .put(verifyAdminJWT, updateAdmin)
   .delete(verifyAdminJWT, deleteAdmin);
 

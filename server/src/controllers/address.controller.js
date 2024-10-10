@@ -6,6 +6,7 @@ import Address from "../models/address.model.js";
 export const createAdress = asyncHandler(async (req, res) => {
   const { address, city, pincode, state, country } = req.body;
   const { userId } = req.params;
+  const { adminId } = req.params;
 
   if (!address || !city || !pincode || !state || !country) {
     throw new ApiError("All fields are required", 400);
@@ -17,7 +18,7 @@ export const createAdress = asyncHandler(async (req, res) => {
     pincode: pincode,
     state: state,
     country: country,
-    owner: userId,
+    owner: userId || adminId,
   });
 
   if (!addressCreated) {

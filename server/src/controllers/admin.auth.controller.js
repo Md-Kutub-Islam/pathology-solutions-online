@@ -16,6 +16,7 @@ import {
   deleteFromCloudinary,
   uploadOnCloudinary,
 } from "../utils/cloudinary.js";
+import { adminInfo } from "../utils/pipeline/adminInfo.js";
 
 const ignoreFields =
   "-password -refreshToken -emailVerificationExpiry -emailVerificationToken -createdAt";
@@ -229,6 +230,33 @@ export const getCurrentAdmin = asyncHandler(async (req, res) => {
     );
 });
 
+export const getOneAdmin = asyncHandler(async (req, res) => {
+  const { adminId } = req.params;
+
+  if (!adminId) {
+    throw new ApiError(400, "missing required fields");
+  }
+
+  const admin = await Admin.findById(adminId);
+  if (!admin) {
+    throw new ApiError(404, "admin not found");
+  }
+
+  const adminDetails = await adminInfo(admin._id);
+  if (!adminDetails) {
+    throw new ApiError(
+      500,
+      "Failed to retrieve admin data or no address found"
+    );
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { adminInfo: adminDetails }, "Admin data retrieved")
+    );
+});
+
 export const getAllAdmins = asyncHandler(async (req, res) => {
   const users = await Admin.find({}).sort({ createdAt: -1 });
 
@@ -240,22 +268,22 @@ export const getAllAdmins = asyncHandler(async (req, res) => {
 });
 
 export const deleteAdmin = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const { adminId } = req.params;
   const admin = await req.admin;
 
   let deleteAdmin = admin;
-  const findAdmin = await Admin.findById(id);
+  const findAdmin = await Admin.findById(adminId);
 
   if (!findAdmin) {
     throw new ApiError(404, "admin not found");
   }
   deleteAdmin = findAdmin;
 
-  if (id == admin._id) {
+  if (adminId == admin._id) {
     deleteAdmin = admin;
   }
 
-  if (id != admin._id) {
+  if (adminId != admin._id) {
     throw new ApiError(500, "you don't have access");
   }
 
@@ -271,20 +299,20 @@ export const deleteAdmin = asyncHandler(async (req, res) => {
 
 export const updateAdmin = asyncHandler(async (req, res) => {
   const { labname, description, email, password, newPassword } = req.body;
-  const { id } = req.params;
+  const { adminId } = req.params;
   const admin = req.admin;
 
   if (!labname && !description && !email && !newPassword) {
     throw new ApiError(404, "no update data provided");
   }
 
-  const findAdmin = await Admin.findById(id);
+  const findAdmin = await Admin.findById(adminId);
   if (!findAdmin) {
     throw new ApiError(404, "admin not found");
   }
   const updateAdmin = findAdmin;
 
-  if (id != admin._id) {
+  if (adminId != admin._id) {
     throw new ApiError(500, "you don't have access");
   }
 
