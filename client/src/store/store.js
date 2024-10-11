@@ -13,6 +13,7 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
+import categorySlice from "../features/comman-features/categorySlice";
 
 const authPersistConfig = {
   key: "auth",
@@ -26,6 +27,7 @@ export const store = configureStore({
     userAuth: persistedAuthReducer,
     adminAuth: adminAuthSlice,
     test: testSlice,
+    category: categorySlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

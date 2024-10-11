@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import testIMG2 from "../../../assets/Electrolyte Panel.jpg";
-import { FaStarHalfAlt } from "react-icons/fa";
 import { FaFilter } from "react-icons/fa";
 import Button from "../../Button";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllAdmins } from "../../../features/admin-features/adminAuthSlice";
 import { getAlltests } from "../../../features/comman-features/testSlice";
+import LabCard from "./LabCard";
+import { Link } from "react-router-dom";
 
 function Home() {
   const dispatch = useDispatch();
@@ -14,7 +14,6 @@ function Home() {
   );
   const { allAdminData } = useSelector((state) => state.adminAuth);
   const { tests } = useSelector((state) => state.test);
-  console.log("test:", tests);
 
   useEffect(() => {
     if (isUserVerified && isUserLogin) {
@@ -22,8 +21,6 @@ function Home() {
       dispatch(getAlltests());
     }
   }, []);
-
-  // console.log("allAdminData:", allAdminData);
 
   return (
     <div className=" w-full pt-10 bg-custom-green min-h-screen">
@@ -52,7 +49,7 @@ function Home() {
           </div>
         </div>
 
-        <hr className=" border-custom-light" />
+        <hr className="w-5/6 border-custom-light-green m-auto" />
 
         <div className="w-5/6 m-auto">
           <div className="flex items-center justify-between">
@@ -66,28 +63,9 @@ function Home() {
           <div className="grid grid-cols-2 gap-5 mt-10 w-full md:grid-cols-4 lg:grid-cols-4 mb">
             {allAdminData && allAdminData.length > 0 ? (
               allAdminData.map((ele) => (
-                <div
-                  key={ele._id}
-                  className="w-full py-5 px-2 rounded-lg flex flex-col items-center justify-center gap-2 bg-custom-light hover:bg-transparent hover:border-2 hover:border-custom-light transition duration-500 ease-in-out"
-                >
-                  <div>
-                    <img
-                      className="w-48 h-28 rounded-lg"
-                      src={testIMG2}
-                      alt="Lab Image"
-                    />
-                  </div>
-                  <div className="lg:w-48 w-full">
-                    <span className="lg:text-lg md:text-base font-semibold text-wrap">
-                      {ele.labname}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <FaStarHalfAlt className="text-custom-green" />
-                      <span>3.5</span>
-                    </div>
-                    <span>Full Lab address...</span>
-                  </div>
-                </div>
+                <Link to={`/user/lab-home/${ele._id}`}>
+                  <LabCard adminData={ele} />
+                </Link>
               ))
             ) : (
               <div>Loading...</div>

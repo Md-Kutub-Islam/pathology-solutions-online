@@ -22,7 +22,7 @@ function App() {
             <Route path="register" element={<RegistrationPage />} />{" "}
             <Route path="login" element={<LoginPage />} />{" "}
             <Route path="home" element={<HomePage />} />{" "}
-            <Route path="lab-home" element={<LabHomePage />} />
+            <Route path="lab-home/:adminId" element={<LabHomePage />} />
             {/* Nested Route */}
           </Route>
 

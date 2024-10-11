@@ -1,17 +1,31 @@
-import React, { useState } from "react";
-import {
-  FaStarHalfAlt,
-  FaChevronCircleRight,
-  FaSearch,
-  FaFilter,
-} from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { FaSearch, FaFilter } from "react-icons/fa";
 import { GoHorizontalRule } from "react-icons/go";
 import InputBox from "../../InputBox";
 import Button from "../../Button";
-import testIMG1 from "../../../assets/Prothrombin Time.jpg";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { getOneAdmin } from "../../../features/admin-features/adminAuthSlice";
+import Labdetails from "./Labdetails";
+import { getAllCategory } from "../../../features/comman-features/categorySlice";
+import CategoryCard from "./CategoryCard";
 
 function LabHome() {
   const [searchData, setSearchData] = useState("");
+  const { adminId } = useParams();
+  const { isUserVerified, isUserLogin } = useSelector(
+    (state) => state.userAuth
+  );
+  const { adminData } = useSelector((state) => state.adminAuth);
+  const { categories } = useSelector((state) => state.category);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isUserVerified && isUserLogin) {
+      dispatch(getOneAdmin({ adminId }));
+      dispatch(getAllCategory({ adminId }));
+    }
+  }, [adminId]);
 
   const handleOnChange = () => {};
   return (
@@ -21,23 +35,7 @@ function LabHome() {
           Home / Location / Lab Name
         </h6>
 
-        <div className=" w-full bg-custom-light p-10 rounded-lg mt-5 flex flex-col items-start gap-2">
-          <h1 className=" font-semibold text-lg">Lab Full Name</h1>
-          <div className="flex items-center gap-2">
-            <FaStarHalfAlt className="text-custom-green" />
-            <span>3.5</span>
-            <span className=" font-semibold">{`(446 rating)`}</span>
-          </div>
-          <span className=" text-wrap font-normal text-lg w-11/12">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. 
-          </span>
-          <GoHorizontalRule className=" text-custom-light-green bg-custom-light-green w-11/12 h-px" />
-          <div className="flex items-center gap-2">
-            <FaChevronCircleRight />
-            <span className=" font-bold">Get report within 6 hours</span>
-          </div>
-        </div>
+        <Labdetails adminData={adminData} />
       </div>
 
       <div className=" flex items-center flex-col">
@@ -62,32 +60,7 @@ function LabHome() {
         <GoHorizontalRule className=" text-custom-light-green bg-custom-light-green w-11/12 h-px mt-20" />
       </div>
 
-      <div className=" mb-10">
-        {[1, 2, 3, 4, 5, 6].map((ele, index) => (
-          <div
-            key={index}
-            className="w-full flex items-center justify-center border border-custom-light-green p-5 mb-5 rounded-lg hover:bg-custom-light duration-700"
-          >
-            <div className=" flex flex-col items-start gap-1">
-              <h1 className=" font-bold text-base md:text-lg lg:text-lg">
-                Test Category Name
-              </h1>
-              <span className=" font-semibold text-base">{`Total: Tests (5)`}</span>
-              <span className="w-11/12 text-wrap font-semibold text-sm">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. 
-              </span>
-            </div>
-            <div>
-              <img
-                src={testIMG1}
-                alt="img"
-                className=" md:h-32 lg:h-32 w-36 h-20 rounded-lg"
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+      <CategoryCard categories={categories} />
     </div>
   );
 }
