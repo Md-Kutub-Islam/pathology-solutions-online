@@ -9,7 +9,7 @@ const InputBox = ({
   className = "",
 }) => {
   return (
-    <div className="mb-6 flex items-start flex-col">
+    <div className="mb-6 flex items-start flex-col w-full">
       <lable className="font-normal text-base">{lable}</lable>
       <input
         type={type}
