@@ -11,6 +11,7 @@ import testRoutes from "./routes/test.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
+import searchRoutes from "./routes/search.routes.js";
 import { BASEPATH } from "./constants.js";
 
 const app = express();
@@ -50,6 +51,8 @@ app.use(`${BASEPATH}/admin-address`, adminAddessRoutes);
 app.use(`${BASEPATH}/category`, categoryRoutes);
 // Tests Routes
 app.use(`${BASEPATH}/test`, testRoutes);
+// search Routes
+app.use(`${BASEPATH}/search`, searchRoutes);
 // Carts Routes
 app.use(`${BASEPATH}/cart`, cartRoutes);
 // Orders Routes
