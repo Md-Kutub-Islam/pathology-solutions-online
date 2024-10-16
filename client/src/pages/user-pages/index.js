@@ -4,6 +4,7 @@ import HomePage from "./HomePage";
 import LabHomePage from "./LabHomePage";
 import SearchPage from "./SearchPage";
 import SearchTestPage from "./SearchTestPage";
+import TestPage from "./TestPage";
 
 export {
   RegistrationPage,
@@ -12,4 +13,5 @@ export {
   LabHomePage,
   SearchPage,
   SearchTestPage,
+  TestPage,
 };
