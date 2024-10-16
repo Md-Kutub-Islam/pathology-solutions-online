@@ -7,6 +7,7 @@ import {
   HomePage,
   LabHomePage,
   SearchPage,
+  SearchTestPage,
 } from "./pages/user-pages";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import VerifyEmail from "./components/user-components/auth/VerifyEmail";
@@ -25,6 +26,7 @@ function App() {
             <Route path="home" element={<HomePage />} />{" "}
             <Route path="lab-home/:adminId" element={<LabHomePage />} />{" "}
             <Route path="search" element={<SearchPage />} />{" "}
+            <Route path="search/test" element={<SearchTestPage />} />{" "}
             {/* Nested Route */}
           </Route>
 

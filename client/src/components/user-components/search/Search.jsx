@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import InputBox from "../../InputBox";
 import { FaSearch } from "react-icons/fa";
 import SearchList from "./SearchList";
 import axios from "axios";
 
-function Search() {
+function Search({
+  placeholder = "Search for pathology lab",
+  url = "search/search-lab",
+}) {
   const [searchData, setSearchData] = useState("");
   const limit = 12;
   const [searchListData, setSearchListData] = useState([]);
+  const [isFocused, setIsFocused] = useState(false);
+  const refs = useRef();
 
   const fetchData = async (searchData) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL_BASEURL}/search/search-lab/${limit}`,
+        `${import.meta.env.VITE_API_URL_BASEURL}/${url}/${limit}`,
         {
           params: {
             q: searchData, // Attach the query as a URL parameter
@@ -24,6 +29,15 @@ function Search() {
       console.error("Error fetching data:", error.message);
     }
   };
+
+  const handleOnFocus = () => {
+    setIsFocused(true);
+    refs.current.focus();
+  };
+
+  useEffect(() => {
+    handleOnFocus();
+  }, []);
 
   useEffect(() => {
     if (searchData.length > 2) {
@@ -37,14 +51,17 @@ function Search() {
     <div className="h-screen w-full bg-custom-green flex flex-col items-center pt-7">
       <div className="w-full md:w-8/12 lg:w-7/12 ">
         <h6 className=" text-xs md:text-sm lg:text-sm font-normal mb-5">
-          Home / Location / Lab Name
+          Home / Location / Lab Name / Search
         </h6>
         <div className="flex w-full h-9 bg-custom-light rounded-md mb-5">
           <InputBox
+            ref={refs}
             type="text"
-            placeholder="Search for pathology lab "
+            placeholder={placeholder}
             value={searchData}
             onChange={(e) => setSearchData(e.target.value)}
+            onFocus={handleOnFocus}
+            onBlur={() => setIsFocused(false)}
             className={`h-9 w-full`}
           />
           <FaSearch className=" text-custom-green h-9 mr-4 " />

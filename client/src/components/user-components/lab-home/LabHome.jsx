@@ -4,7 +4,7 @@ import { GoHorizontalRule } from "react-icons/go";
 import InputBox from "../../InputBox";
 import Button from "../../Button";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getOneAdmin } from "../../../features/admin-features/adminAuthSlice";
 import Labdetails from "./Labdetails";
 import { getAllCategory } from "../../../features/comman-features/categorySlice";
@@ -41,16 +41,12 @@ function LabHome() {
       <div className=" flex items-center flex-col">
         <h1 className=" font-bold text-xl">All Test Category</h1>
 
-        <div className="flex items-center justify-center mt-7 w-0 bg-custom-light px-44 h-10 pt-5 rounded-lg md:w-full lg:w-full">
-          <FaSearch className="relative md:left-64 lg:left-72 bottom-3 text-custom-green" />
-          <InputBox
-            type="search"
-            placeholder="Search For All Tests"
-            value={searchData}
-            onChange={handleOnChange}
-            className={` border-transparent h-10 min-w-72 md:min-w-72 lg:min-w-80 text-center `}
-          />
-        </div>
+        <Link to={`/user/search/test`}>
+          <div className="flex items-center justify-center gap-5 mt-7 bg-custom-light px-20 md:px-44 lg:px-44 h-10 rounded-lg w-full md:w-full lg:w-full">
+            <span className="text-xs w-full">Search For All Tests</span>
+            <FaSearch className="text-custom-green" />
+          </div>
+        </Link>
 
         <div className="flex items-center relative right-32 md:right-72 lg:right-72 top-7">
           <FaFilter className="relative left-7 text-custom-green" />
