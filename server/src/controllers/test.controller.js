@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import Test from "../models/test.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { availableUserRoles } from "../constants.js";
+import { testInfo } from "../utils/pipeline/testInfo.js";
 
 export const createTest = asyncHandler(async (req, res) => {
   const { testname, description, price, category } = req.body;
@@ -73,6 +74,33 @@ export const getAllTest = asyncHandler(async (req, res) => {
     .status(200)
     .json(
       new ApiResponse(200, { testInfo: tests }, "Tests retrieved successfully")
+    );
+});
+
+export const getTestByCategory = asyncHandler(async (req, res) => {
+  const { categoryId } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  if (!categoryId) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  const testDeatails = await testInfo(categoryId);
+
+  if (!testDeatails) {
+    throw new ApiError(500, "Failed to retrieve test data");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { testInfo: testDeatails },
+        "Tests retrieved successfully"
+      )
     );
 });
 

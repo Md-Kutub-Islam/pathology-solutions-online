@@ -6,6 +6,7 @@ import {
   updateTest,
   removeTest,
   filterTests,
+  getTestByCategory,
 } from "../controllers/test.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyAdminJWT } from "../middlewares/admin.auth.middleware.js";
@@ -16,6 +17,8 @@ router
   .route("/")
   .post(verifyAdminJWT, upload.single("mainImage"), createTest)
   .get(getAllTest);
+
+router.route("/:categoryId").get(getTestByCategory);
 
 router
   .route("/:testId")
