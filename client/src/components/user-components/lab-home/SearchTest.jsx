@@ -2,9 +2,7 @@ import React from "react";
 import SearchPage from "../../../pages/user-pages/SearchPage";
 
 function SearchTest() {
-  return (
-    <SearchPage placeholder={`Search for All Test`} url={`search/search-lab`} />
-  );
+  return <SearchPage />;
 }
 
 export default SearchTest;

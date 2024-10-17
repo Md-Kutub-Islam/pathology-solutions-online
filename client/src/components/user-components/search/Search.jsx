@@ -3,12 +3,13 @@ import InputBox from "../../InputBox";
 import { FaSearch } from "react-icons/fa";
 import SearchList from "./SearchList";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
-function Search({
-  placeholder = "Search for pathology lab",
-  url = "search/search-lab",
-}) {
+function Search() {
   const [searchData, setSearchData] = useState("");
+  const [placeholder, setPlaceholder] = useState("Search for pathology lab");
+  const [urlPath, setUrlPath] = useState("search/search-lab");
+  const location = useLocation();
   const limit = 12;
   const [searchListData, setSearchListData] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
@@ -17,7 +18,7 @@ function Search({
   const fetchData = async (searchData) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL_BASEURL}/${url}/${limit}`,
+        `${import.meta.env.VITE_API_URL_BASEURL}/${urlPath}/${limit}`,
         {
           params: {
             q: searchData, // Attach the query as a URL parameter
@@ -36,6 +37,10 @@ function Search({
   };
 
   useEffect(() => {
+    if (location.pathname === "/user/search/test") {
+      setPlaceholder("Search for All Test");
+      setUrlPath("search/search-test");
+    }
     handleOnFocus();
   }, []);
 
@@ -74,7 +79,7 @@ function Search({
           searchListData.map((data) => (
             <SearchList
               key={data._id}
-              name={data.labname}
+              name={data.labname || data.testname}
               description={data.description}
             />
           ))}

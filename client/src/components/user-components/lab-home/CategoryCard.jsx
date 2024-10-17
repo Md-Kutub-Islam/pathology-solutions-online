@@ -6,7 +6,7 @@ function CategoryCard({ categories, adminId }) {
     <div className=" mb-10">
       {categories &&
         categories.map((data) => (
-          <Link to={`/user/test/${adminId}/${adminId}`}>
+          <Link to={`/user/test/${adminId}/${data._id}`}>
             <div
               key={data._id}
               className="w-full flex items-center justify-center border border-custom-light-green p-5 mb-5 rounded-lg hover:bg-custom-light duration-700"

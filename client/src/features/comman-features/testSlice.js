@@ -2,13 +2,35 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Getting All Test
-
 export const getAlltests = createAsyncThunk(
   "test/getAllTests",
   async ({ page = 1 } = {}, { rejectWithValue }) => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL_BASEURL}/test`,
+        {
+          headers: { "Content-Type": "application/json" },
+          params: {
+            page,
+            limit: 12,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const message = error.response?.data?.message || error.message;
+      return rejectWithValue(message);
+    }
+  }
+);
+
+// Getting test by category
+export const getTestByCategory = createAsyncThunk(
+  "test/getTestByCategory",
+  async ({ categoryId, page = 1 } = {}, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL_BASEURL}/test/${categoryId}`,
         {
           headers: { "Content-Type": "application/json" },
           params: {
@@ -52,6 +74,20 @@ export const testSlice = createSlice({
         state.tests = action.payload.data.testInfo;
       })
       .addCase(getAlltests.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      // Getting test by category
+      .addCase(getTestByCategory.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getTestByCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.tests = action.payload.data.testInfo;
+      })
+      .addCase(getTestByCategory.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

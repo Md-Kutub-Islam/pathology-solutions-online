@@ -6,21 +6,27 @@ import Button from "../../Button";
 import { GoHorizontalRule } from "react-icons/go";
 import { useSelector, useDispatch } from "react-redux";
 import { getOneAdmin } from "../../../features/admin-features/adminAuthSlice";
+import { getTestByCategory } from "../../../features/comman-features/testSlice";
+import TestCard from "./TestCard";
 
 function Test() {
-  const { categoryId, adminId } = useParams();
+  const { adminId, categoryId } = useParams();
   const dispatch = useDispatch();
   const { isUserVerified, isUserLogin } = useSelector(
     (state) => state.userAuth
   );
   const { adminData } = useSelector((state) => state.adminAuth);
+  const { tests } = useSelector((state) => state.test);
 
   useEffect(() => {
     if (isUserVerified && isUserLogin) {
       dispatch(getOneAdmin({ adminId }));
-      // dispatch(getAllCategory({ adminId }));
+      dispatch(getTestByCategory({ categoryId }));
     }
-  }, [adminId]);
+  }, [adminId, categoryId]);
+
+  console.log("test:", tests && tests);
+
   return (
     <div className=" h-fit w-full bg-custom-green flex flex-col items-center gap-10 pt-7">
       <div>
@@ -32,7 +38,7 @@ function Test() {
       </div>
 
       <div className=" flex items-center flex-col">
-        <h1 className=" font-bold text-xl">All Test Category</h1>
+        <h1 className=" font-bold text-xl">{tests && tests[0]?.name}</h1>
 
         <Link to={`/user/search/test`}>
           <div className="flex items-center justify-center gap-5 mt-7 bg-custom-light px-20 md:px-44 lg:px-44 h-10 rounded-lg w-full md:w-full lg:w-full">
@@ -48,6 +54,8 @@ function Test() {
 
         <GoHorizontalRule className=" text-custom-light-green bg-custom-light-green w-11/12 h-px mt-20" />
       </div>
+
+      <TestCard tests={tests && tests} />
     </div>
   );
 }

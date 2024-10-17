@@ -42,6 +42,9 @@ export const login = createAsyncThunk(
           withCredentials: true,
         }
       );
+      const { token } = response.data;
+      // Store the token in localStorage
+      localStorage.setItem("authToken", token); // Save token in localStorage
       return response.data;
     } catch (error) {
       const message = error.response?.data?.message || error.message;
