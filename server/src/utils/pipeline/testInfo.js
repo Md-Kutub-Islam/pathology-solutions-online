@@ -22,5 +22,5 @@ export const testInfo = async (categoryId) => {
     },
   ]);
 
-  return testData.length ? testData[0] : null; // Return the first element or null if no match
+  return testData.length ? testData : null; // Return the first element or null if no match
 };
