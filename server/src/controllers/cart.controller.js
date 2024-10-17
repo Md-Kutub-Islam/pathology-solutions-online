@@ -9,35 +9,108 @@ const getCart = async (userId) => {
   const cartAggregation = await Cart.aggregate([
     {
       $match: {
-        owner: userId,
+        owner: userId, // Match the cart by user ID
       },
     },
     {
-      $unwind: "$items",
+      $unwind: "$items", // Unwind the items array
     },
     {
       $lookup: {
-        from: "tests",
+        from: "tests", // First lookup: Get details from the tests collection
         localField: "items.testId",
         foreignField: "_id",
         as: "test",
       },
     },
     {
+      $unwind: {
+        path: "$test",
+        preserveNullAndEmptyArrays: true, // Preserve empty arrays
+      },
+    },
+    {
+      $lookup: {
+        from: "categories", // Second lookup: Get category details for each test
+        localField: "test.category", // Assuming `test` has `categoryId` field
+        foreignField: "_id",
+        as: "category",
+      },
+    },
+    {
+      $unwind: {
+        path: "$category",
+        preserveNullAndEmptyArrays: true, // Preserve empty arrays
+      },
+    },
+    {
+      $lookup: {
+        from: "admis", // Third lookup: Get lab details based on category's owner field
+        localField: "category.owner", // Assuming `category` has `owner` field
+        foreignField: "_id",
+        as: "lab",
+      },
+    },
+    {
+      $unwind: {
+        path: "$lab",
+        preserveNullAndEmptyArrays: true, // Preserve empty arrays
+      },
+    },
+    {
+      $lookup: {
+        from: "addresses", // Third lookup: Get lab details based on category's owner field
+        localField: "lab._id", // Assuming `lab`
+        foreignField: "owner",
+        as: "address",
+      },
+    },
+    {
+      $unwind: {
+        path: "$address",
+        preserveNullAndEmptyArrays: true, // Preserve empty arrays
+      },
+    },
+    {
       $project: {
-        test: { $first: "$test" },
+        test: {
+          _id: "$test._id",
+          name: "$test.testname",
+          price: "$test.price",
+        },
+        category: {
+          _id: "$category._id",
+          name: "$category.name",
+        },
+        lab: {
+          _id: "$lab._id",
+          labname: "$lab.labname",
+          description: "$lab.description",
+        },
+        address: {
+          _id: "address._id",
+          address: "address.address",
+          city: "address.city",
+          pincode: "address.pincode",
+          state: "address.state",
+        },
+        "items.quantity": 1, // Keep the cart item's quantity
       },
     },
     {
       $group: {
-        _id: "$_id",
+        _id: "$_id", // Group the results by cart _id
         items: {
-          $push: "$$ROOT",
+          $push: {
+            test: "$test",
+            category: "$category",
+            lab: "$lab",
+            address: "$address",
+            quantity: "$items.quantity",
+          },
         },
         cartTotal: {
-          $sum: {
-            $multiply: ["$test.price"],
-          },
+          $sum: { $multiply: ["$test.price", "$items.quantity"] }, // Calculate the total price based on quantity
         },
       },
     },
