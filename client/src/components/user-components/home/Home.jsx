@@ -40,7 +40,7 @@ function Home() {
                 >
                   <img
                     className="h-32 w-32 rounded-full object-cover"
-                    src={ele.mainImage.url}
+                    src={ele?.mainImage?.url}
                     alt="testImage"
                   />
                   <span className=" text-wrap">{ele.testname}</span>

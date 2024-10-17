@@ -5,6 +5,7 @@ import LabHomePage from "./LabHomePage";
 import SearchPage from "./SearchPage";
 import SearchTestPage from "./SearchTestPage";
 import TestPage from "./TestPage";
+import CartPage from "./CartPage";
 
 export {
   RegistrationPage,
@@ -14,4 +15,5 @@ export {
   SearchPage,
   SearchTestPage,
   TestPage,
+  CartPage,
 };

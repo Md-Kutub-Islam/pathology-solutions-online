@@ -32,10 +32,12 @@ function Header({ userData }) {
         </div>
 
         {/* Cart */}
-        <div className="flex items-center gap-1 cursor-pointer">
-          <FaBitbucket className=" text-lg" />
-          <span className=" text-base font-medium">Cart</span>
-        </div>
+        <Link to={`/user/cart`}>
+          <div className="flex items-center gap-1 cursor-pointer">
+            <FaBitbucket className=" text-lg" />
+            <span className=" text-base font-medium">Cart</span>
+          </div>
+        </Link>
       </div>
     </div>
   );
