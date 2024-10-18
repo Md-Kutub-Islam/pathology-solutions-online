@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// addOrUpdateCart
 export const addOrUpdateCart = createAsyncThunk(
   "cart/addOrUpdateCart",
   async ({ testId }, { rejectWithValue }) => {
@@ -16,6 +17,27 @@ export const addOrUpdateCart = createAsyncThunk(
     } catch (error) {
       const message = error.response?.data?.message || error.message;
       const cartInfo = error.response?.data?.orderInfo || null;
+      return rejectWithValue({ message, cartInfo });
+    }
+  }
+);
+
+// fetchUserCart
+export const fetchUserCart = createAsyncThunk(
+  "cart/fetchUserCart",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL_BASEURL}/cart`,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const message = error.response?.data?.message || error.message;
+      const cartInfo = error.response?.data?.cartInfo || null;
       return rejectWithValue({ message, cartInfo });
     }
   }
@@ -48,6 +70,20 @@ export const cartSlice = createSlice({
         state.carts = action.payload.data.cartInfo;
       })
       .addCase(addOrUpdateCart.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      // fetchUserCart
+      .addCase(fetchUserCart.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.singleCart = action.payload.data;
+      })
+      .addCase(fetchUserCart.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });
