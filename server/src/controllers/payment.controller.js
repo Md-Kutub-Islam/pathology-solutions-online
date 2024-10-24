@@ -7,6 +7,7 @@ import crypto from "crypto";
 import { razorpay } from "../../index.js";
 import Admin from "../models/admin.model.js";
 import Order from "../models/order.model.js";
+import { orderStatus } from "../constants.js";
 
 export const getRazorpayAPIKey = asyncHandler(async (req, res) => {
   return res
@@ -23,19 +24,23 @@ export const getRazorpayAPIKey = asyncHandler(async (req, res) => {
 export const checkout = asyncHandler(async (req, res) => {
   const user = req.user;
   const { amount } = req.body;
-  const { labId, orderId } = req.params;
 
   const findUser = await User.findById(user._id);
-  const findLab = await Admin.findById(labId);
-  const findOrder = await Order.findById(orderId);
+  const findOrder = await Order.findOne({ customer: user._id }) // Use findOne
+    .sort({ created_at: -1 });
 
   if (!findUser) {
     throw new ApiError(404, "User not found");
   }
 
-  if (!findLab && !findOrder) {
-    throw new ApiError(404, "Lab and order not found");
+  if (!findOrder) {
+    throw new ApiError(404, "Order not found");
   }
+
+  findOrder.status = orderStatus.CONFIRMED;
+  findOrder.isPaymentDone = true;
+
+  await findOrder.save(); // This will now work, since findOrder is a single document
 
   const options = {
     amount: Number(amount * 100),
@@ -47,10 +52,6 @@ export const checkout = asyncHandler(async (req, res) => {
   if (!order) {
     throw new ApiError("Failed to create order, please try again", 500);
   }
-
-  findLab.order = orderfindOrder._id;
-
-  await findLab.save();
 
   return res
     .status(200)
@@ -86,6 +87,8 @@ export const paymentVerification = asyncHandler(async (req, res) => {
       razorpay_payment_id,
       razorpay_signature,
     });
+
+    console.log("hello");
 
     return res
       .status(200)

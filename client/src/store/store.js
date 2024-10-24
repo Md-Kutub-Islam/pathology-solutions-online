@@ -15,6 +15,8 @@ import {
 } from "redux-persist";
 import categorySlice from "../features/comman-features/categorySlice";
 import cartSlice from "../features/comman-features/cartSlice";
+import orderSlice from "../features/comman-features/orderSlice";
+import paymentSlice from "../features/comman-features/paymentSlice";
 
 const authPersistConfig = {
   key: "auth",
@@ -30,6 +32,8 @@ export const store = configureStore({
     test: testSlice,
     category: categorySlice,
     cart: cartSlice,
+    order: orderSlice,
+    payment: paymentSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

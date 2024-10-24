@@ -32,7 +32,7 @@ export const RESET_PASS_PAGE = "/resetPassword";
 export const orderStatus = {
   PENDING: "PENDING",
   CANCELLED: "CANCELLED",
-  DELIVERED: "DELIVERED",
+  CONFIRMED: "CONFIRMED",
 };
 export const orderStatusEnum = Object.values(orderStatus);
 

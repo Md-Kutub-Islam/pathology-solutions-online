@@ -6,117 +6,135 @@ import { ObjectId } from "mongodb";
 import Order from "../models/order.model.js";
 import Test from "../models/test.model.js";
 import Payment from "../models/payment.model.js";
-import { getOrderInfoPipeline } from "../utils/pipeline/orderInfo.js";
+import orderInfoPipeLine from "../utils/pipeline/orderInfo.js";
 import { getItemsPipeline } from "../utils/pipeline/orderIteminfo.js";
 
 export const getAllOrder = asyncHandler(async (req, res) => {
-  const { labId } = req.params;
-  const admin = await req.admin;
-
-  if (!labId) {
-    throw new ApiError(500, "Please provide a lab id in params");
-  }
-
-  if (!admin && admin._id !== labId) {
-    throw new ApiError(500, "you don't have access");
-  }
-
-  const order = await Order.find({ lab: labId }).sort({
-    createdAt: -1,
-  });
+  const order = await orderInfoPipeLine(req.user._id);
 
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        { ordersInfo: order },
-        "All orders retrieved successfully"
+        { orderInfo: order },
+        "Orders retrieved successfully"
       )
     );
 });
 
-export const getOrder = asyncHandler(async (req, res) => {
-  const user = await req.user;
-  const admin = await req.admin;
-  const { userId, orderId } = await req.params;
+// export const getAllOrder = asyncHandler(async (req, res) => {
+//   const page = parseInt(req.query.page, 10) || 1;
+//   const limit = parseInt(req.query.limit, 10) || 10;
+//   const skip = (page - 1) * limit;
 
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
+//   const orders = await Order.find({})
+//     .sort({ createdAt: -1 })
+//     .skip(skip)
+//     .limit(limit)
+//     .lean();
 
-  if (!userId && !orderId && !admin) {
-    throw new ApiError(500, "you don't have access");
-  }
+//   if (!orders.length) {
+//     return res
+//       .status(200)
+//       .json(new ApiResponse(200, { orderInfo: [] }, "No orders found"));
+//   }
 
-  if (!user) {
-    throw new ApiError(500, "you don't have access");
-  }
+//   const ordersInfo = await Promise.all(
+//     orders.map((order) => orderInfoPipeLine(order._id))
+//   );
 
-  if (userId && user._id != userId) {
-    throw new ApiError(500, "you don't have access");
-  }
+//   return res
+//     .status(200)
+//     .json(
+//       new ApiResponse(
+//         200,
+//         { orderInfo: ordersInfo },
+//         "Orders retrieved successfully"
+//       )
+//     );
+// });
 
-  const orderPipeline = [...getOrderInfoPipeline];
-  if (userId && !orderId) {
-    orderPipeline.unshift({
-      $match: {
-        customer: new ObjectId(userId),
-      },
-    });
-  }
+// export const getOrder = asyncHandler(async (req, res) => {
+//   const user = await req.user;
+//   const { userId } = await req.params;
 
-  if (userId && orderId) {
-    orderPipeline.unshift({
-      $match: {
-        _id: new ObjectId(orderId),
-        customer: new ObjectId(userId),
-      },
-    });
-  }
+//   const page = parseInt(req.query.page) || 1;
+//   const limit = parseInt(req.query.limit) || 10;
+//   const skip = (page - 1) * limit;
 
-  orderPipeline.push({ $skip: skip }, { $limit: limit });
+//   if (!userId && !orderId && !admin) {
+//     throw new ApiError(500, "you don't have access");
+//   }
 
-  const data = await Order.aggregate(orderPipeline);
-  if (!data) {
-    throw new ApiError(500, `failed to retrieve order data - ${data}`);
-  }
+//   if (!user) {
+//     throw new ApiError(500, "you don't have access");
+//   }
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, { orderInfo: data }, "order data retrieved"));
-});
+//   if (userId && user._id != userId) {
+//     throw new ApiError(500, "you don't have access");
+//   }
+
+//   const orderPipeline = [...getOrderInfoPipeline];
+//   if (userId && !orderId) {
+//     orderPipeline.unshift({
+//       $match: {
+//         customer: new ObjectId(userId),
+//       },
+//     });
+//   }
+
+//   if (userId && orderId) {
+//     orderPipeline.unshift({
+//       $match: {
+//         _id: new ObjectId(orderId),
+//         customer: new ObjectId(userId),
+//       },
+//     });
+//   }
+
+//   orderPipeline.push({ $skip: skip }, { $limit: limit });
+
+//   const data = await Order.aggregate(orderPipeline);
+//   if (!data) {
+//     throw new ApiError(500, `failed to retrieve order data - ${data}`);
+//   }
+
+//   return res
+//     .status(200)
+//     .json(new ApiResponse(200, { orderInfo: data }, "order data retrieved"));
+// });
 
 export const addOrder = asyncHandler(async (req, res) => {
   const user = req.user;
-  const { labId, userId } = req.params;
-  const { items, addressId, paymentMethod } = req.body;
+  const { userId } = req.params;
+  const { orderItems, paymentMethod } = req.body;
 
-  if (!labId && !userId) {
-    throw new ApiError(404, "please provide user id and lab id in params");
+  if (!userId) {
+    throw new ApiError(404, "please provide user id in params");
   }
 
   if (userId != user._id) {
     throw new ApiError(500, "you don't have access");
   }
 
-  if (!items || !addressId || !paymentMethod) {
+  if (!orderItems) {
     throw new ApiError(404, "please provide required fields");
   }
 
-  if (!Array.isArray(items)) {
+  if (!Array.isArray(orderItems)) {
     return res
       .status(400)
-      .json({ error: "items must be provided in an array" });
+      .json({ error: "orderItems must be provided in an array" });
   }
 
-  for (const item of items) {
-    if (!item.testId) {
-      throw new ApiError(400, "each item must have a valid productId");
+  for (const orderItem of orderItems) {
+    if (!orderItem.testId && !orderItem.labid) {
+      throw new ApiError(400, "each item must have a valid testId and labId");
     }
   }
 
-  const itemsPipeline = await getItemsPipeline(items);
+  const itemsPipeline = await getItemsPipeline(orderItems);
   const itemProductData = await Test.aggregate(itemsPipeline);
 
   if (!itemProductData) {
@@ -124,10 +142,12 @@ export const addOrder = asyncHandler(async (req, res) => {
   }
 
   const orderData = {
-    items: items,
+    items: orderItems.map((item) => ({
+      testId: item.testId,
+      labId: item.labId,
+    })), // Ensure each item has 'testId'
     customer: userId,
-    lab: labId,
-    address: addressId,
+    // items: labs.map((lab) => ({ labId: lab.labId })), // Ensure each lab has 'labId'
     status: orderStatus.PENDING,
   };
 

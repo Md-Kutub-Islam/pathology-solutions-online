@@ -14,6 +14,10 @@ const orderSchema = new Schema({
           type: Schema.Types.ObjectId,
           ref: "tests",
         },
+        labId: {
+          type: Schema.Types.ObjectId,
+          ref: "admis",
+        },
       },
     ],
     default: [],
@@ -21,14 +25,6 @@ const orderSchema = new Schema({
   customer: {
     type: Schema.Types.ObjectId,
     ref: "users",
-  },
-  lab: {
-    type: Schema.Types.ObjectId,
-    ref: "admins",
-  },
-  address: {
-    type: Schema.Types.ObjectId,
-    ref: "addresses",
   },
   status: {
     type: String,
