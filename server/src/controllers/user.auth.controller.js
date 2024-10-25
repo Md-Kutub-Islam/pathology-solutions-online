@@ -12,6 +12,7 @@ import moment from "moment-timezone";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import { userInfo } from "../utils/pipeline/userInfo.js";
 
 const ignoreFields =
   "-password -refreshToken -emailVerificationExpiry -emailVerificationToken -createdAt";
@@ -224,10 +225,15 @@ export const logoutUser = asyncHandler(async (req, res) => {
 
 export const getCurrentUser = asyncHandler(async (req, res) => {
   const user = await req.user;
+  const userDetails = await userInfo(user._id);
   return res
     .status(200)
     .json(
-      new ApiResponse(200, { userInfo: user }, "user fetched successfully")
+      new ApiResponse(
+        200,
+        { userInfo: userDetails },
+        "user fetched successfully"
+      )
     );
 });
 
