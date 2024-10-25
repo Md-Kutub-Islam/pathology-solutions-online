@@ -5,11 +5,13 @@ function Button({
   className,
   bgColor = "bg-custom-light",
   text = "text-sm",
+  px = "px-9",
+  py = "py-2",
   ...props
 }) {
   return (
     <button
-      className={`px-9 py-2 rounded-3xl ${text} ${bgColor} ${className}`}
+      className={`${px} ${py} rounded-3xl ${text} ${bgColor} ${className}`}
       {...props}
     >
       {children}

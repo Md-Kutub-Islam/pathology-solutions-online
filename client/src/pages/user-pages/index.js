@@ -6,6 +6,7 @@ import SearchPage from "./SearchPage";
 import SearchTestPage from "./SearchTestPage";
 import TestPage from "./TestPage";
 import CartPage from "./CartPage";
+import ProfilePage from "./ProfilePage";
 
 export {
   RegistrationPage,
@@ -16,4 +17,5 @@ export {
   SearchTestPage,
   TestPage,
   CartPage,
+  ProfilePage,
 };

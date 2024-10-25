@@ -10,6 +10,7 @@ import {
   SearchTestPage,
   TestPage,
   CartPage,
+  ProfilePage,
 } from "./pages/user-pages";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import VerifyEmail from "./components/user-components/auth/VerifyEmail";
@@ -30,7 +31,9 @@ function App() {
             <Route path="test/:adminId/:categoryId" element={<TestPage />} />{" "}
             <Route path="search" element={<SearchPage />} />{" "}
             <Route path="search/test" element={<SearchTestPage />} />{" "}
-            <Route path="cart" element={<CartPage />} /> {/* Nested Route */}
+            <Route path="cart" element={<CartPage />} />{" "}
+            <Route path="profile" element={<ProfilePage />} />{" "}
+            {/* Nested Route */}
           </Route>
 
           {/* Route for Email Verification (direct access) */}
