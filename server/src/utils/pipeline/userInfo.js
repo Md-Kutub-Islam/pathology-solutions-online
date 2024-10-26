@@ -37,5 +37,5 @@ export const userInfo = async (userId) => {
     },
   ]);
 
-  return userData;
+  return userData[0] || null;
 };

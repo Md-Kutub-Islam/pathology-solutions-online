@@ -5,7 +5,6 @@ import { ApiError } from "../utils/ApiError.js";
 import Payment from "../models/payment.model.js";
 import crypto from "crypto";
 import { razorpay } from "../../index.js";
-import Admin from "../models/admin.model.js";
 import Order from "../models/order.model.js";
 import { orderStatus } from "../constants.js";
 
@@ -23,11 +22,10 @@ export const getRazorpayAPIKey = asyncHandler(async (req, res) => {
 
 export const checkout = asyncHandler(async (req, res) => {
   const user = req.user;
-  const { amount } = req.body;
+  const { amount, orderId } = req.body;
 
   const findUser = await User.findById(user._id);
-  const findOrder = await Order.findOne({ customer: user._id }) // Use findOne
-    .sort({ created_at: -1 });
+  const findOrder = await Order.findById(orderId);
 
   if (!findUser) {
     throw new ApiError(404, "User not found");
