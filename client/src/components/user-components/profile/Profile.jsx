@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import userProfile from "../../../assets/ai-avatar-crop.png";
 import imge from "../../../assets/Electrolyte Panel.jpg";
 import Button from "../../Button";
 import { FaRupeeSign } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { user } from "../../../features/user-features/userAuthSlice";
+import { getAllorders } from "../../../features/comman-features/orderSlice";
 
 function Profile() {
+  const dispatch = useDispatch();
+  const { isUserVerified, isUserLogin, userData } = useSelector(
+    (state) => state.userAuth
+  );
+  const { orders } = useSelector((state) => state.order);
+
+  const confirmedOrder =
+    orders && orders?.filter((order) => order.status === "CONFIRMED");
+
+  console.log("confirm:", confirmedOrder);
+
+  useEffect(() => {
+    if (isUserVerified && isUserLogin) {
+      dispatch(user());
+      dispatch(getAllorders());
+    }
+  }, []);
   return (
     <div className="min-h-screen w-full bg-custom-green flex flex-col items-center ">
       <div className="w-11/12 md:w-9/12 lg:w-8/12  mt-10">
@@ -19,12 +39,16 @@ function Profile() {
             />
           </div>
           <div className="flex flex-col items-start text-xs md:text-base lg:text-base font-bold">
-            <span>User Full Name</span>
-            <span>user@gmail.com</span>
-            <span>Test Book: (0)</span>
+            <span>{userData && userData?.username}</span>
+            <span>{userData && userData?.email}</span>
+            <span>
+              Test Book: {confirmedOrder ? confirmedOrder.length : "0"}
+            </span>
             <span className=" font-normal w-full text-wrap md:w-11/12 lg:w-11/12">
-              User address Ipsum is simply dummy text of the printing and
-              typesetting . 
+              {userData && userData?.useraddress[0].street},{" "}
+              {userData && userData?.useraddress[0].city},{" "}
+              {userData && userData?.useraddress[0].pincode},{" "}
+              {userData && userData?.useraddress[0].state}
             </span>
           </div>
           <Button
@@ -48,32 +72,50 @@ function Profile() {
             className="text-xs font-semibold md:text-xs lg:text-base rounded-xl"
           />
         </div>
-        <div className="flex items-center border border-custom-light-green p-5 rounded-xl hover:scale-90 duration-700">
-          <div className="flex flex-col gap-1 w-11/12 text-wrap cursor-pointer text-xs md:text-base lg:text-base">
-            <span className="font-bold">Test Name</span>
-            <span className="font-medium">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. 
-            </span>
-            <div className="flex items-center">
-              <FaRupeeSign className="text-custom-light" />
-              <span className="font-bold">155</span>
-            </div>
-            <span className="font-medium">Test No: 20</span>
-            <span className="font-bold">Lab Name</span>
-            <span className="font-medium">
-              Lab address Ipsum is simply dummy text of the printing and
-              typesetting . 
-            </span>
-            <span className="font-bold">20 Oct 2024 11: 40</span>
-          </div>
 
-          <img
-            src={imge}
-            alt="img"
-            className="h-20 w-20 lg:h-32 lg:w-32 rounded-lg"
-          />
-        </div>
+        {confirmedOrder && confirmedOrder.length > 0 ? (
+          confirmedOrder?.map((order) => (
+            <div
+              key={order._id}
+              className="flex flex-col items-center gap-3 border border-custom-light-green p-5 mb-5 rounded-xl hover:scale-90 duration-700"
+            >
+              {order.items?.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between pb-2 lg:gap-32 "
+                >
+                  <div className="flex flex-col gap-1 w-11/12 text-wrap cursor-pointer text-xs md:text-base lg:text-base">
+                    <span className="font-bold">{item?.test?.testname}</span>
+                    <span className="font-medium">
+                      {item?.test?.description}
+                    </span>
+                    <div className="flex items-center">
+                      <FaRupeeSign className="text-custom-light" />
+                      <span className="font-bold">{item?.test?.price}</span>
+                    </div>
+                    <span className="font-medium">Test No: 20</span>
+                    <span className="font-bold">{item?.lab?.labname}</span>
+                    <span className="font-medium">
+                      {item?.labDetails?.address?.street},{" "}
+                      {item?.labDetails?.address?.city},{" "}
+                      {item?.labDetails?.address?.pincode},{" "}
+                      {item?.labDetails?.address?.state}
+                    </span>
+                    <span className="font-bold">20 Oct 2024 11: 40</span>
+                  </div>
+
+                  <img
+                    src={imge}
+                    alt="img"
+                    className="h-16 w-16 md:h-20 md:w-20 lg:h-32 lg:w-32 rounded-lg"
+                  />
+                </div>
+              ))}
+            </div>
+          ))
+        ) : (
+          <div>Loading</div>
+        )}
       </div>
     </div>
   );

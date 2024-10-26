@@ -4,17 +4,14 @@ import axios from "axios";
 // checkout
 export const checkout = createAsyncThunk(
   "payment/checkout",
-  async ({ amount }, { rejectWithValue }) => {
+  async ({ amount, orderId }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL_BASEURL}/payment/checkout`,
-        { amount },
+        { amount, orderId },
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
-          //   params: {
-          //     orderId,
-          //   },
         }
       );
       return response.data;

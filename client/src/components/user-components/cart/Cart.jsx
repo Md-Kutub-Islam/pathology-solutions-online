@@ -20,6 +20,7 @@ function Cart() {
   const { isUserVerified, isUserLogin, userInfo } = useSelector(
     (state) => state.userAuth
   );
+  const { orders } = useSelector((state) => state.order);
   const { orderData, status, error } = useSelector((state) => state.payment);
   const { singleCart } = useSelector((state) => state.cart);
   const totalTestPrice =
@@ -60,7 +61,8 @@ function Cart() {
 
   const handlePayment = () => {
     const amount = totalTestPrice + 6 + gstPrice;
-    dispatch(checkout({ amount }));
+    const orderId = orders && orders?._id;
+    dispatch(checkout({ amount, orderId }));
   };
 
   const handlePaymentVerify = (data) => {

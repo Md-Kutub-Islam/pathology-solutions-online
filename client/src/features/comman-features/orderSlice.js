@@ -4,16 +4,13 @@ import axios from "axios";
 // Getting All Test
 export const getAllorders = createAsyncThunk(
   "order/getAllorders",
-  async ({ page = 1 } = {}, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL_BASEURL}/order`,
         {
+          withCredentials: true,
           headers: { "Content-Type": "application/json" },
-          params: {
-            page,
-            limit: 12,
-          },
         }
       );
       return response.data;

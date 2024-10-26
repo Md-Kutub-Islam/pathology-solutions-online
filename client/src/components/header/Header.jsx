@@ -24,12 +24,14 @@ function Header({ userData }) {
         </Link>
 
         {/* User */}
-        <div className="flex items-center gap-1 cursor-pointer">
-          <FaUser className=" text-lg" />
-          <span className=" text-base font-medium">
-            {userData.name.slice(0, 5)}...
-          </span>
-        </div>
+        <Link to={`/user/profile`}>
+          <div className="flex items-center gap-1 cursor-pointer">
+            <FaUser className=" text-lg" />
+            <span className=" text-base font-medium">
+              {userData.username.slice(0, 5)}...
+            </span>
+          </div>
+        </Link>
 
         {/* Cart */}
         <Link to={`/user/cart`}>
