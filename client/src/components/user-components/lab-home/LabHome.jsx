@@ -8,6 +8,7 @@ import { getOneAdmin } from "../../../features/admin-features/adminAuthSlice";
 import Labdetails from "./Labdetails";
 import { getAllCategory } from "../../../features/comman-features/categorySlice";
 import CategoryCard from "./CategoryCard";
+import Loading from "../../Loading";
 
 function LabHome() {
   const [searchData, setSearchData] = useState("");
@@ -16,7 +17,7 @@ function LabHome() {
     (state) => state.userAuth
   );
   const { adminData } = useSelector((state) => state.adminAuth);
-  const { categories } = useSelector((state) => state.category);
+  const { categories, loading } = useSelector((state) => state.category);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -26,12 +27,13 @@ function LabHome() {
     }
   }, [adminId]);
 
-  const handleOnChange = () => {};
-  return (
-    <div className=" h-fit w-full bg-custom-green flex flex-col items-center gap-10 pt-7">
-      <div>
-        <h6 className=" text-xs md:text-sm lg:text-sm font-normal">
-          Home / Location / Lab Name
+  return loading ? (
+    <Loading />
+  ) : (
+    <div className=" h-fit w-full bg-custom-green flex flex-col items-center gap-10 pt-7 ">
+      <div className="mt-24">
+        <h6 className=" hidden text-xs md:text-sm md:block lg:block lg:text-sm font-normal">
+          <Link to={"/user/home"}>Home</Link> / Lab Name
         </h6>
 
         <Labdetails adminData={adminData} />

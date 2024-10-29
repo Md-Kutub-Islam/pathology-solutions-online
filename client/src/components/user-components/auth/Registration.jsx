@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import png from "../../../images/favicon.png";
+import logo from "../../../assets/image.png";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -66,11 +66,9 @@ const Registration = () => {
   return (
     <div className="my-4 flex w-full min-h-screen flex-wrap px-4 mt-0 bg-custom-green">
       <div className="w-full px-4 my-auto ">
-        <div className="relative max-w-[525px] rounded-xl border-2 mx-auto border-solid bg-custom-light px-10 py-8 text-center sm:px-12 md:px-[60px]">
-          <div className="mb-5 text-center md:mb-5">
-            <h1 className="text-custom-green text-center font-extrabold text-2xl ">
-              Pathology Solution <br /> Online+
-            </h1>
+        <div className="relative max-w-[700px] md:max-w-[525px] lg:max-w-[525px] rounded-xl border-2 mx-auto border-solid bg-custom-light px-10 py-8 text-center sm:px-12 md:px-[60px]">
+          <div className="mb-5 flex flex-col items-center text-center md:mb-5">
+            <img src={logo} alt="Logo" />
 
             <h2 className="text-black font-medium text-xl mt-5">
               Create New Account

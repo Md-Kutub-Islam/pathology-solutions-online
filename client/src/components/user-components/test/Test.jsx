@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getOneAdmin } from "../../../features/admin-features/adminAuthSlice";
 import { getTestByCategory } from "../../../features/comman-features/testSlice";
 import TestCard from "./TestCard";
+import Loading from "../../Loading";
 
 function Test() {
   const { adminId, categoryId } = useParams();
@@ -16,7 +17,7 @@ function Test() {
     (state) => state.userAuth
   );
   const { adminData } = useSelector((state) => state.adminAuth);
-  const { tests } = useSelector((state) => state.test);
+  const { tests, loading } = useSelector((state) => state.test);
 
   useEffect(() => {
     if (isUserVerified && isUserLogin) {
@@ -25,13 +26,13 @@ function Test() {
     }
   }, [adminId, categoryId]);
 
-  console.log("test:", tests && tests);
-
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className=" h-fit w-full bg-custom-green flex flex-col items-center gap-10 pt-7">
-      <div>
-        <h6 className=" text-xs md:text-sm lg:text-sm font-normal">
-          Home / Location / Test
+      <div className="mt-24">
+        <h6 className=" hidden text-xs md:block md:text-sm lg:block lg:text-sm font-normal">
+          <Link to={"/user/home"}>Home</Link> / Lab Home / Test
         </h6>
 
         <Labdetails adminData={adminData} />

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import Button from "../../Button";
 import { FaRupeeSign } from "react-icons/fa";
 import { useDispatch } from "react-redux";
@@ -9,10 +10,11 @@ function TestCard({ tests }) {
   const handleOnClick = (testId) => {
     if (!testId) return;
     dispatch(addOrUpdateCart({ testId }));
+    toast.success("Test is added to the cart.");
   };
 
   return (
-    <div className=" mb-10">
+    <div>
       {tests &&
         tests.map((data) => (
           <div
@@ -49,6 +51,18 @@ function TestCard({ tests }) {
                 onClick={() => handleOnClick(data?.testDetails?._id)}
               />
             </div>
+            <ToastContainer
+              position="bottom-center"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+            />
           </div>
         ))}
     </div>

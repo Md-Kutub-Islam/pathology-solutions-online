@@ -6,11 +6,8 @@ function CategoryCard({ categories, adminId }) {
     <div className=" mb-10">
       {categories &&
         categories.map((data) => (
-          <Link to={`/user/test/${adminId}/${data._id}`}>
-            <div
-              key={data._id}
-              className="w-full flex items-center justify-center border border-custom-light-green p-5 mb-5 rounded-lg hover:bg-custom-light duration-700"
-            >
+          <Link key={data._id} to={`/user/test/${adminId}/${data._id}`}>
+            <div className="w-full flex items-center justify-center border border-custom-light-green p-5 mb-5 rounded-lg hover:bg-custom-light duration-700">
               <div className=" flex flex-col items-start gap-1">
                 <h1 className=" font-bold text-base md:text-lg lg:text-lg">
                   {data.name}

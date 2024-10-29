@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import png from "../../../images/favicon.png";
+import logo from "../../../assets/image.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../../features/user-features/userAuthSlice";
@@ -56,12 +56,10 @@ const Login = () => {
     <div className="flex w-full flex-wrap px-4 bg-custom-green min-h-screen">
       <div className="w-full px-4 my-auto">
         <div className="relative mx-auto max-w-[525px] rounded-xl border-4 bg-custom-light border-solid px-10 py-16 text-center sm:px-12 md:px-[60px]">
-          <div className="mb-5 mt-0 text-center md:mb-5">
-            <h1 className="text-custom-green mt-0 text-center font-extrabold text-2xl ">
-              Pathology Solution <br /> Online+
-            </h1>
+          <div className="mb-5 mt-0 flex flex-col items-center text-center md:mb-5">
+            <img src={logo} alt="Logo" />
 
-            <h2 className="text-black font-medium text-xl mt-5">
+            <h2 className="text-black font-medium text-xl mt-2">
               Welcome Back
             </h2>
           </div>

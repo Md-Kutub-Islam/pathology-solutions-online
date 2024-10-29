@@ -50,14 +50,9 @@ function Search() {
     }
   }, [searchData]);
 
-  console.log("searchData:", searchListData);
-
   return (
-    <div className="h-screen w-full bg-custom-green flex flex-col items-center pt-7">
-      <div className="w-full md:w-8/12 lg:w-7/12 ">
-        <h6 className=" text-xs md:text-sm lg:text-sm font-normal mb-5">
-          Home / Location / Lab Name / Search
-        </h6>
+    <div className="min-h-screen w-full bg-custom-green flex flex-col items-center pt-7">
+      <div className="w-full md:w-8/12 lg:w-7/12 mt-24">
         <div className="flex w-full h-9 bg-custom-light rounded-md mb-5">
           <InputBox
             ref={refs}
@@ -81,6 +76,7 @@ function Search() {
               key={data._id}
               name={data.labname || data.testname}
               description={data.description}
+              categoryId={data.category}
             />
           ))}
       </div>

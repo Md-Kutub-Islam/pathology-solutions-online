@@ -6,13 +6,14 @@ import { getAllAdmins } from "../../../features/admin-features/adminAuthSlice";
 import { getAlltests } from "../../../features/comman-features/testSlice";
 import LabCard from "./LabCard";
 import { Link } from "react-router-dom";
+import Loading from "../../Loading";
 
 function Home() {
   const dispatch = useDispatch();
   const { isUserVerified, isUserLogin } = useSelector(
     (state) => state.userAuth
   );
-  const { allAdminData } = useSelector((state) => state.adminAuth);
+  const { allAdminData, loading } = useSelector((state) => state.adminAuth);
   const { tests } = useSelector((state) => state.test);
 
   useEffect(() => {
@@ -22,9 +23,11 @@ function Home() {
     }
   }, []);
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className=" w-full pt-10 bg-custom-green min-h-screen">
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-10 mt-24">
         <div className="flex flex-col w-5/6 m-auto">
           <h1 className=" font-semibold">
             Your Health, Our Priority – Book, Test, Download.
@@ -39,11 +42,13 @@ function Home() {
                   className="flex flex-col items-center shrink-0"
                 >
                   <img
-                    className="h-32 w-32 rounded-full object-cover"
+                    className="h-24 w-24 md:h-32 md:w-32 lg:h-32 lg:w-32 rounded-full object-cover"
                     src={ele?.mainImage?.url}
                     alt="testImage"
                   />
-                  <span className=" text-wrap">{ele.testname}</span>
+                  <span className="text-wrap text-xs mt-1 md:text-base lg:text-base">
+                    {ele.testname}
+                  </span>
                 </div>
               ))}
           </div>
@@ -63,7 +68,7 @@ function Home() {
           <div className="grid grid-cols-2 gap-5 mt-10 w-full md:grid-cols-4 lg:grid-cols-4 mb">
             {allAdminData && allAdminData.length > 0 ? (
               allAdminData.map((ele) => (
-                <Link to={`/user/lab-home/${ele._id}`}>
+                <Link key={ele._id} to={`/user/lab-home/${ele._id}`}>
                   <LabCard adminData={ele} />
                 </Link>
               ))

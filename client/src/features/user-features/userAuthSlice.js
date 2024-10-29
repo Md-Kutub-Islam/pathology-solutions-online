@@ -54,6 +54,27 @@ export const login = createAsyncThunk(
   }
 );
 
+// Logout
+export const logout = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL_BASEURL}/auth/logout`,
+        {},
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const message = error.response?.data?.message || error.message;
+      return rejectWithValue(message);
+    }
+  }
+);
+
 // User
 export const user = createAsyncThunk(
   "auth/User",
@@ -111,7 +132,6 @@ const userAuthSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.userInfo = action.payload.data.userInfo;
-        state.userData = action.payload.data.userInfo;
         state.error = null;
         state.isLoading = false;
         state.isUserLogin = true;
@@ -120,7 +140,23 @@ const userAuthSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload.message;
+        state.error = action.payload || "An unexpected error occurred";
+      })
+      // Logout
+      .addCase(logout.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(logout.fulfilled, (state, action) => {
+        state.userInfo = null;
+        state.userData = null;
+        state.error = null;
+        state.isLoading = false;
+        state.isUserLogin = false;
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload; // Access the error message directly
       })
       // User
       .addCase(user.pending, (state) => {

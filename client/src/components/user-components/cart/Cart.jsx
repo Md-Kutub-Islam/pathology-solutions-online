@@ -13,6 +13,7 @@ import {
   verifyPayment,
 } from "../../../features/comman-features/paymentSlice";
 import { addOrder } from "../../../features/comman-features/orderSlice";
+import Loading from "../../Loading";
 
 function Cart() {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ function Cart() {
   );
   const { orders } = useSelector((state) => state.order);
   const { orderData, status, error } = useSelector((state) => state.payment);
-  const { singleCart } = useSelector((state) => state.cart);
+  const { singleCart, loading } = useSelector((state) => state.cart);
   const totalTestPrice =
     singleCart &&
     singleCart?.items
@@ -30,7 +31,7 @@ function Cart() {
         return item?.test?.price;
       })
       .reduce((acc, curr) => acc + curr, 0);
-  const gstPrice = (2 / 100) * totalTestPrice + 2;
+  const gstPrice = totalTestPrice * 0.02 + 2;
   const [dependency, setDependency] = useState(0);
   const [isEnter, setIsEnter] = useState(false);
 
@@ -103,9 +104,11 @@ function Cart() {
     }
   }, [status, orderData]);
 
-  return (
-    <div className="h-screen w-full flex justify-center bg-custom-green">
-      <div className="h-fit w-11/12 p-5 md:w-8/12 lg:w-7/12 mt-10 rounded-lg bg-custom-light flex flex-col items-center ">
+  return loading ? (
+    <Loading />
+  ) : (
+    <div className="min-h-screen w-full flex justify-center bg-custom-green">
+      <div className="h-fit w-11/12 p-5 md:w-8/12 lg:w-7/12 mt-32 rounded-lg bg-custom-light flex flex-col items-center mb-5 ">
         {singleCart &&
           singleCart.items.map((data) => (
             <div

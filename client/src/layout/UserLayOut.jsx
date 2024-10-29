@@ -5,13 +5,12 @@ import { useSelector } from "react-redux";
 
 function UserLayOut() {
   const location = useLocation();
-  const { userData } = useSelector((state) => state.userAuth);
-  console.log("userData", userData);
+  const { userInfo } = useSelector((state) => state.userAuth);
 
   return (
     <div>
       {location.pathname !== "/user/register" &&
-        location.pathname !== "/user/login" && <Header userData={userData} />}
+        location.pathname !== "/user/login" && <Header userData={userInfo} />}
       <div>
         <Outlet />
       </div>
