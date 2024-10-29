@@ -258,12 +258,23 @@ export const getOneAdmin = asyncHandler(async (req, res) => {
 });
 
 export const getAllAdmins = asyncHandler(async (req, res) => {
-  const users = await Admin.find({}).sort({ createdAt: -1 });
+  const admins = await Admin.find({}).sort({ createdAt: -1 });
+
+  const allAdmins = await Promise.all(
+    admins.map((data) => adminInfo(data._id))
+  );
+
+  if (!allAdmins) {
+    throw new ApiError(
+      500,
+      "Failed to retrieve admin data or no address found"
+    );
+  }
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, { userInfo: users }, "user fetched successfully")
+      new ApiResponse(200, { userInfo: allAdmins }, "user fetched successfully")
     );
 });
 
