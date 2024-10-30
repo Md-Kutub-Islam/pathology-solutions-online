@@ -17,10 +17,27 @@ import { BASEPATH } from "./constants.js";
 const app = express();
 
 // middlewares
+// app.use(
+//   cors({
+//     origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+//     credentials: true,
+//   })
+// );
+
+// middlewares
+const allowedOrigins = [process.env.CORS_ORIGIN || "http://localhost:5173"];
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
-    credentials: true,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps, curl, etc.)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,  // Allow cookies and other credentials in cross-origin requests
   })
 );
 
