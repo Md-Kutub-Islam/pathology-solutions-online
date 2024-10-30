@@ -25,7 +25,7 @@ const app = express();
 // );
 
 // middlewares
- process.env.CORS_ORIGIN || "http://localhost:5173",
+ const allowedOrigins = process.env.CORS_ORIGIN || "http://localhost:5173",
   "http://localhost:3000" // Add any additional origins you may need
 
 app.use(
