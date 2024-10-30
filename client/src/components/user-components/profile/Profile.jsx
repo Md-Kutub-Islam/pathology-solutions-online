@@ -18,7 +18,9 @@ function Profile() {
   const { orders, loading } = useSelector((state) => state.order);
 
   const confirmedOrder =
-    orders && orders?.filter((order) => order.status === "CONFIRMED");
+    orders &&
+    orders.length > 0 &&
+    orders?.filter((order) => order.status === "CONFIRMED");
 
   const handleLogout = () => {
     dispatch(logout());
@@ -126,7 +128,7 @@ function Profile() {
             </div>
           ))
         ) : (
-          <div>Loading</div>
+          <div></div>
         )}
       </div>
     </div>

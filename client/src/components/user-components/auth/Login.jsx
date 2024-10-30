@@ -8,8 +8,8 @@ import InputBox from "../../InputBox";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: "givedim667@exweme.com",
+    password: "123456789",
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();

@@ -3,10 +3,10 @@ import { FaFilter } from "react-icons/fa";
 import Button from "../../Button";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllAdmins } from "../../../features/admin-features/adminAuthSlice";
-import { getAlltests } from "../../../features/comman-features/testSlice";
 import LabCard from "./LabCard";
 import { Link } from "react-router-dom";
 import Loading from "../../Loading";
+import { getAllLabCategory } from "../../../features/comman-features/categorySlice";
 
 function Home() {
   const dispatch = useDispatch();
@@ -14,12 +14,12 @@ function Home() {
     (state) => state.userAuth
   );
   const { allAdminData, loading } = useSelector((state) => state.adminAuth);
-  const { tests } = useSelector((state) => state.test);
+  const { allLabCategory } = useSelector((state) => state.category);
 
   useEffect(() => {
     if (isUserVerified && isUserLogin) {
       dispatch(getAllAdmins());
-      dispatch(getAlltests());
+      dispatch(getAllLabCategory());
     }
   }, []);
 
@@ -33,23 +33,22 @@ function Home() {
             Your Health, Our Priority – Book, Test, Download.
           </h1>
 
-          <div className="flex items-center justify-center gap-10 mt-10 overflow-x-auto whitespace-nowrap scrollbar-hide">
-            {tests &&
-              tests.length > 0 &&
-              tests.map((ele) => (
-                <div
-                  key={ele._id}
-                  className="flex flex-col items-center shrink-0"
-                >
-                  <img
-                    className="h-24 w-24 md:h-32 md:w-32 lg:h-32 lg:w-32 rounded-full object-cover"
-                    src={ele?.mainImage?.url}
-                    alt="testImage"
-                  />
-                  <span className="text-wrap text-xs mt-1 md:text-base lg:text-base">
-                    {ele.testname}
-                  </span>
-                </div>
+          <div className="flex items-center justify-center gap-10 mt-10 overflow-x-auto whitespace-nowrap scrollbar-hide lg:gap-16">
+            {allLabCategory &&
+              allLabCategory.length > 0 &&
+              allLabCategory?.map((ele) => (
+                <Link key={ele._id} to={`/user/test/${ele.owner}/${ele._id}`}>
+                  <div className="flex flex-col items-center shrink-0 w-32">
+                    <img
+                      className="h-24 w-24 md:h-32 md:w-32 lg:h-32 lg:w-32 rounded-full object-cover"
+                      src={ele?.image?.url}
+                      alt="testImage"
+                    />
+                    <span className="text-wrap text-center text-xs mt-1 md:text-base lg:text-base">
+                      {ele.name}
+                    </span>
+                  </div>
+                </Link>
               ))}
           </div>
         </div>

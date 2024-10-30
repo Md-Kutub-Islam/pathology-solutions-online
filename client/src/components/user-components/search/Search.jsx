@@ -39,7 +39,7 @@ function Search() {
   useEffect(() => {
     if (location.pathname === "/user/search/test") {
       setPlaceholder("Search for All Test");
-      setUrlPath("search/search-test");
+      setUrlPath("search/search-category");
     }
     handleOnFocus();
   }, []);
@@ -74,9 +74,10 @@ function Search() {
           searchListData.map((data) => (
             <SearchList
               key={data._id}
-              name={data.labname || data.testname}
+              id={data._id}
+              name={data.labname || data.name}
               description={data.description}
-              categoryId={data.category}
+              lab={data.owner}
             />
           ))}
       </div>
