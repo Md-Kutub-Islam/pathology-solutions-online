@@ -25,7 +25,7 @@ const app = express();
 // );
 
 // middlewares
-const allowedOrigins = [process.env.CORS_ORIGIN || "http://localhost:5173", "https://your-live-server.com"];
+const allowedOrigins = [process.env.CORS_ORIGIN || "http://localhost:5173", "https://social-media-web-application-t3j4.onrender.com/api/v1"];
 
 app.use(
   cors({
