@@ -26,7 +26,8 @@ const app = express();
 
 // middlewares
 const allowedOrigins = [
-  process.env.CORS_ORIGIN || "http://localhost:5173",
+  process.env.CORS_ORIGIN ||
+    "https://pathology-solutions-online-1.onrender.com",
   "https://social-media-web-application-t3j4.onrender.com/api/v1",
 ];
 
