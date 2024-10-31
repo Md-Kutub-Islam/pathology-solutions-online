@@ -10,7 +10,8 @@ function UserLayOut() {
   return (
     <div>
       {location.pathname !== "/user/register" &&
-        location.pathname !== "/user/login" && <Header userData={userInfo} />}
+        location.pathname !== "/user/login" &&
+        location.pathname !== "/" && <Header userData={userInfo} />}
       <div>
         <Outlet />
       </div>

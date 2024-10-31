@@ -24,13 +24,12 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* Customer Routes with Nested Children */}
-          <Route path="/user" element={<UserLayOut />}>
-            <Route index element={<RegistrationPage />} />{" "}
-            {/* Default to Dashboard */}
-            <Route path="register" element={<RegistrationPage />} />{" "}
-            <Route path="login" element={<LoginPage />} />{" "}
+          <Route path="/" element={<UserLayOut />}>
+            <Route index element={<LoginPage />} /> {/* Default to Dashboard */}
+            <Route path="user/register" element={<RegistrationPage />} />{" "}
+            <Route path="user/login" element={<LoginPage />} />{" "}
             <Route
-              path="home"
+              path="user/home"
               element={
                 <Suspense fallback={<Loading />}>
                   <HomePage />
@@ -38,7 +37,7 @@ function App() {
               }
             />{" "}
             <Route
-              path="lab-home/:adminId"
+              path="user/lab-home/:adminId"
               element={
                 <Suspense fallback={<Loading />}>
                   <LabHomePage />
@@ -46,17 +45,17 @@ function App() {
               }
             />{" "}
             <Route
-              path="test/:adminId/:categoryId"
+              path="user/test/:adminId/:categoryId"
               element={
                 <Suspense fallback={<Loading />}>
                   <TestPage />
                 </Suspense>
               }
             />{" "}
-            <Route path="search" element={<SearchPage />} />{" "}
-            <Route path="search/test" element={<SearchTestPage />} />{" "}
+            <Route path="user/search" element={<SearchPage />} />{" "}
+            <Route path="user/search/test" element={<SearchTestPage />} />{" "}
             <Route
-              path="cart"
+              path="user/cart"
               element={
                 <Suspense fallback={<Loading />}>
                   <CartPage />
@@ -64,7 +63,7 @@ function App() {
               }
             />{" "}
             <Route
-              path="profile"
+              path="user/profile"
               element={
                 <Suspense fallback={<Loading />}>
                   <ProfilePage />
