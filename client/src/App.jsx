@@ -21,7 +21,7 @@ const ProfilePage = lazy(() => import("./pages/user-pages/ProfilePage"));
 function App() {
   return (
     <>
-      <BrowserRouter>
+      <BrowserRouter basename="/api/v1">
         <Routes>
           {/* Customer Routes with Nested Children */}
           <Route path="/" element={<UserLayOut />}>
