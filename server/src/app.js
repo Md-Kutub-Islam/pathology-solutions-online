@@ -27,7 +27,7 @@ const app = express();
 // middlewares
 const allowedOrigins = [
   process.env.CORS_ORIGIN ||
-    "https://pathology-solution-online-v.vercel.app",
+    "https://pathology-solution-online-v-client.vercel.app", 
   "https://social-media-web-application-t3j4.onrender.com/api/v1",
 ];
 
