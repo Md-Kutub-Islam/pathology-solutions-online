@@ -10,7 +10,7 @@ Built using the MERN stack, Pathology Solution Online leverages React.js, Redux 
 
 ## Demo
 
-https://pathology-solutions-online-1.onrender.com/
+https://pathology-solution-online-v-client.vercel.app/
 
 
 ## Screenshots
